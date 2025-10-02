@@ -4,18 +4,22 @@ import 'dashboard_view.dart';
 import 'package_manager_view.dart';
 import 'common_tools_view.dart';
 import 'dev_tools_view.dart';
+import 'cross_platform_dev_tools_view.dart';
 import '../models/package_manager.dart';
 import '../models/common_tool.dart';
 import '../models/dev_tool.dart';
+import '../models/cross_platform_dev_tool.dart';
 
 class MainContent extends StatelessWidget {
   final String selectedCategory;
   final List<PackageManager> packageManagers;
   final List<CommonTool> commonTools;
   final List<DevTool> devTools;
+  final List<CrossPlatformDevTool> crossPlatformDevTools;
   final bool isLoadingPackageManagers;
   final bool isLoadingCommonTools;
   final bool isLoadingDevTools;
+  final bool isLoadingCrossPlatformDevTools;
   final VoidCallback onInstallAllPackageManagers;
   final Function(PackageManager) onInstallPackageManager;
   final Function(PackageManager) onCheckPackageManager;
@@ -37,6 +41,13 @@ class MainContent extends StatelessWidget {
   final Function(DevTool) onRemoveDevTool;
   final Function(DevTool) onReinstallDevTool;
   final Function(DevTool) onUpdateDevTool;
+  final VoidCallback onInstallAllCrossPlatformDevTools;
+  final Function(CrossPlatformDevTool) onInstallCrossPlatformDevTool;
+  final Function(CrossPlatformDevTool) onCheckCrossPlatformDevTool;
+  final Function(CrossPlatformDevTool) onTestCrossPlatformDevTool;
+  final Function(CrossPlatformDevTool) onRemoveCrossPlatformDevTool;
+  final Function(CrossPlatformDevTool) onReinstallCrossPlatformDevTool;
+  final Function(CrossPlatformDevTool) onUpdateCrossPlatformDevTool;
 
   const MainContent({
     Key? key,
@@ -44,9 +55,11 @@ class MainContent extends StatelessWidget {
     required this.packageManagers,
     required this.commonTools,
     required this.devTools,
+    required this.crossPlatformDevTools,
     required this.isLoadingPackageManagers,
     required this.isLoadingCommonTools,
     required this.isLoadingDevTools,
+    required this.isLoadingCrossPlatformDevTools,
     required this.onInstallAllPackageManagers,
     required this.onInstallPackageManager,
     required this.onCheckPackageManager,
@@ -68,6 +81,13 @@ class MainContent extends StatelessWidget {
     required this.onRemoveDevTool,
     required this.onReinstallDevTool,
     required this.onUpdateDevTool,
+    required this.onInstallAllCrossPlatformDevTools,
+    required this.onInstallCrossPlatformDevTool,
+    required this.onCheckCrossPlatformDevTool,
+    required this.onTestCrossPlatformDevTool,
+    required this.onRemoveCrossPlatformDevTool,
+    required this.onReinstallCrossPlatformDevTool,
+    required this.onUpdateCrossPlatformDevTool,
   }) : super(key: key);
 
   @override
@@ -189,6 +209,17 @@ class MainContent extends StatelessWidget {
           onReinstall: onReinstallDevTool,
           onUpdate: onUpdateDevTool,
         );
+      case 'cross_platform_dev':
+        return CrossPlatformDevToolsView(
+          crossPlatformDevTools: crossPlatformDevTools,
+          onInstallAll: onInstallAllCrossPlatformDevTools,
+          onInstall: onInstallCrossPlatformDevTool,
+          onCheck: onCheckCrossPlatformDevTool,
+          onTest: onTestCrossPlatformDevTool,
+          onRemove: onRemoveCrossPlatformDevTool,
+          onReinstall: onReinstallCrossPlatformDevTool,
+          onUpdate: onUpdateCrossPlatformDevTool,
+        );
       case 'dashboard':
       default:
         return DashboardView(
@@ -210,6 +241,8 @@ class MainContent extends StatelessWidget {
         return Icons.build;
       case 'dev_tools':
         return Icons.code;
+      case 'cross_platform_dev':
+        return Icons.devices;
       case 'dashboard':
       default:
         return Icons.dashboard;
@@ -224,6 +257,8 @@ class MainContent extends StatelessWidget {
         return 'Common Tools';
       case 'dev_tools':
         return 'Dev Tools';
+      case 'cross_platform_dev':
+        return 'Cross-Platform Dev';
       case 'dashboard':
       default:
         return 'Dashboard';

@@ -75,6 +75,15 @@ class PrismaClient {
         'isActive': true,
         'category': 'dev_tools',
       },
+      {
+        'id': '5',
+        'name': 'Cross-Platform Dev',
+        'icon': 'devices',
+        'route': '/cross-platform-dev',
+        'order': 5,
+        'isActive': true,
+        'category': 'cross_platform_dev',
+      },
     ];
   }
 
@@ -619,5 +628,139 @@ class PrismaClient {
     // Mock implementation
     await Future.delayed(const Duration(milliseconds: 50));
     print('Updating dev tool $toolId: $updates');
+  }
+
+  // Cross-Platform Dev Tools operations
+  Future<List<Map<String, dynamic>>> getCrossPlatformDevTools() async {
+    // Mock implementation - in real app, this would query the database
+    await Future.delayed(const Duration(milliseconds: 100));
+    return [
+      {
+        'id': '1',
+        'name': 'react',
+        'displayName': 'React',
+        'icon': 'code',
+        'color': '#61DAFB',
+        'status': 'unknown',
+        'version': null,
+        'description': 'JavaScript library for building user interfaces',
+        'isActive': true,
+        'order': 1,
+      },
+      {
+        'id': '2',
+        'name': 'flutter',
+        'displayName': 'Flutter',
+        'icon': 'flutter_dash',
+        'color': '#02569B',
+        'status': 'unknown',
+        'version': null,
+        'description': 'UI toolkit for building natively compiled applications',
+        'isActive': true,
+        'order': 2,
+      },
+      {
+        'id': '3',
+        'name': 'react_native',
+        'displayName': 'React Native',
+        'icon': 'code',
+        'color': '#61DAFB',
+        'status': 'unknown',
+        'version': null,
+        'description': 'Framework for building native apps using React',
+        'isActive': true,
+        'order': 3,
+      },
+      {
+        'id': '4',
+        'name': 'android_studio',
+        'displayName': 'Android Studio',
+        'icon': 'android',
+        'color': '#3DDC84',
+        'status': 'unknown',
+        'version': null,
+        'description': 'Official IDE for Android development',
+        'isActive': true,
+        'order': 4,
+      },
+      {
+        'id': '5',
+        'name': 'vite',
+        'displayName': 'Vite',
+        'icon': 'flash_on',
+        'color': '#646CFF',
+        'status': 'unknown',
+        'version': null,
+        'description': 'Next generation frontend tooling',
+        'isActive': true,
+        'order': 5,
+      },
+      {
+        'id': '6',
+        'name': 'kite',
+        'displayName': 'Kite',
+        'icon': 'code',
+        'color': '#FF6B6B',
+        'status': 'unknown',
+        'version': null,
+        'description': 'AI-powered code completion tool',
+        'isActive': true,
+        'order': 6,
+      },
+      {
+        'id': '7',
+        'name': 'nextjs',
+        'displayName': 'Next.js',
+        'icon': 'code',
+        'color': '#000000',
+        'status': 'unknown',
+        'version': null,
+        'description': 'React framework for production',
+        'isActive': true,
+        'order': 7,
+      },
+      {
+        'id': '8',
+        'name': 'nuxtjs',
+        'displayName': 'Nuxt.js',
+        'icon': 'code',
+        'color': '#00DC82',
+        'status': 'unknown',
+        'version': null,
+        'description': 'Vue.js framework for production',
+        'isActive': true,
+        'order': 8,
+      },
+      {
+        'id': '9',
+        'name': 'firebase_cli',
+        'displayName': 'Firebase CLI',
+        'icon': 'cloud',
+        'color': '#FFCA28',
+        'status': 'unknown',
+        'version': null,
+        'description': 'Command-line interface for Firebase',
+        'isActive': true,
+        'order': 9,
+      },
+      {
+        'id': '10',
+        'name': 'neon_cli',
+        'displayName': 'Neon CLI',
+        'icon': 'cloud',
+        'color': '#00D4AA',
+        'status': 'unknown',
+        'version': null,
+        'description': 'Serverless Postgres database CLI',
+        'isActive': true,
+        'order': 10,
+      },
+    ];
+  }
+
+  Future<void> updateCrossPlatformDevTool(String toolId, Map<String, dynamic> updates) async {
+    // Mock implementation
+    await Future.delayed(const Duration(milliseconds: 50));
+    print('Updating cross-platform dev tool $toolId: $updates');
   }
 }

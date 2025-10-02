@@ -71,6 +71,23 @@ class IconHelper {
     }
   }
 
+  static IconData getCrossPlatformDevToolIcon(String iconName) {
+    switch (iconName.toLowerCase()) {
+      case 'code':
+        return Icons.code;
+      case 'flutter_dash':
+        return Icons.flutter_dash;
+      case 'android':
+        return Icons.android;
+      case 'flash_on':
+        return Icons.flash_on;
+      case 'cloud':
+        return Icons.cloud;
+      default:
+        return Icons.code;
+    }
+  }
+
   static IconData getActionLogIcon(String level) {
     switch (level.toLowerCase()) {
       case 'info':

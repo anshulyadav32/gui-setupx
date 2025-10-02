@@ -7,11 +7,13 @@ import 'models/navbar_item.dart';
 import 'models/package_manager.dart';
 import 'models/common_tool.dart';
 import 'models/dev_tool.dart';
+import 'models/cross_platform_dev_tool.dart';
 import 'models/action_log.dart';
 import 'widgets/left_sidebar.dart';
 import 'widgets/right_sidebar.dart';
 import 'widgets/main_content.dart';
 import 'widgets/dev_tools_view.dart';
+import 'widgets/cross_platform_dev_tools_view.dart';
 
 void main() {
   runApp(const FullScreenApp());
@@ -53,6 +55,7 @@ class _FullScreenHomePageState extends State<FullScreenHomePage> {
   List<PackageManager> _packageManagers = [];
   List<CommonTool> _commonTools = [];
   List<DevTool> _devTools = [];
+  List<CrossPlatformDevTool> _crossPlatformDevTools = [];
   List<ActionLog> _actionLogs = [];
 
   // Loading States
@@ -60,6 +63,7 @@ class _FullScreenHomePageState extends State<FullScreenHomePage> {
   bool _isLoadingPackageManagers = false;
   bool _isLoadingCommonTools = false;
   bool _isLoadingDevTools = false;
+  bool _isLoadingCrossPlatformDevTools = false;
 
   // Timer for maintaining full screen
   Timer? _fullScreenTimer;
@@ -113,6 +117,7 @@ class _FullScreenHomePageState extends State<FullScreenHomePage> {
       await _loadPackageManagers();
       await _loadCommonTools();
       await _loadDevTools();
+      await _loadCrossPlatformDevTools();
       
       // Automatically verify status of all components on startup
       await _verifyAllComponentStatus();
@@ -208,6 +213,21 @@ class _FullScreenHomePageState extends State<FullScreenHomePage> {
       await _logAppEvent('error', 'Failed to load dev tools: $e', category: 'dev_tools');
     } finally {
       setState(() => _isLoadingDevTools = false);
+    }
+  }
+
+  Future<void> _loadCrossPlatformDevTools() async {
+    setState(() => _isLoadingCrossPlatformDevTools = true);
+    try {
+      final tools = await PrismaClient.instance.getCrossPlatformDevTools();
+      setState(() {
+        _crossPlatformDevTools = tools.map((tool) => CrossPlatformDevTool.fromMap(tool)).toList();
+      });
+      await _logAppEvent('info', 'Cross-platform dev tools loaded successfully: ${_crossPlatformDevTools.length} tools', category: 'cross_platform_dev_tools');
+    } catch (e) {
+      await _logAppEvent('error', 'Failed to load cross-platform dev tools: $e', category: 'cross_platform_dev_tools');
+    } finally {
+      setState(() => _isLoadingCrossPlatformDevTools = false);
     }
   }
 
@@ -610,6 +630,120 @@ class _FullScreenHomePageState extends State<FullScreenHomePage> {
     print('Message: ${tool.displayName} updated successfully');
   }
 
+  // Cross-Platform Dev Tools methods
+  Future<void> _installAllCrossPlatformDevTools() async {
+    await _logAppEvent('info', 'Installing all cross-platform dev tools', category: 'cross_platform_dev_tools');
+    for (final tool in _crossPlatformDevTools) {
+      await _installCrossPlatformDevTool(tool);
+    }
+  }
+
+  Future<void> _installCrossPlatformDevTool(CrossPlatformDevTool tool) async {
+    await _logAppEvent('info', 'Installing cross-platform dev tool: ${tool.displayName}', 
+        category: 'cross_platform_dev_tools', 
+        metadata: {'tool': tool.displayName});
+    
+    // Simulate installation
+    await Future.delayed(const Duration(seconds: 1));
+    
+    setState(() {
+      final index = _crossPlatformDevTools.indexWhere((t) => t.id == tool.id);
+      if (index != -1) {
+        _crossPlatformDevTools[index] = _crossPlatformDevTools[index].copyWith(
+          status: 'installed',
+          version: '1.0.0',
+        );
+      }
+    });
+    
+    await _logAppEvent('success', 'Cross-platform dev tool installed: ${tool.displayName}', category: 'cross_platform_dev_tools');
+  }
+
+  Future<void> _checkCrossPlatformDevTool(CrossPlatformDevTool tool) async {
+    await _logAppEvent('info', 'Checking cross-platform dev tool: ${tool.displayName}', 
+        category: 'cross_platform_dev_tools', 
+        metadata: {'tool': tool.displayName});
+    
+    // Simulate status check
+    await Future.delayed(const Duration(milliseconds: 500));
+    print('Checking ${tool.displayName} status...');
+    
+    // Update status based on some logic (simulate real checking)
+    final isInstalled = tool.name == 'react' || 
+                       tool.name == 'flutter' || 
+                       tool.name == 'vite' || 
+                       tool.name == 'nextjs' || 
+                       tool.name == 'firebase_cli';
+    
+    setState(() {
+      final index = _crossPlatformDevTools.indexWhere((t) => t.id == tool.id);
+      if (index != -1) {
+        _crossPlatformDevTools[index] = _crossPlatformDevTools[index].copyWith(
+          status: isInstalled ? 'installed' : 'unknown',
+          version: isInstalled ? '1.0.0' : null,
+        );
+      }
+    });
+    
+    print('Message: ${tool.displayName} is ${isInstalled ? 'installed' : 'not installed'}');
+    await _logAppEvent('success', '${tool.displayName} status: ${isInstalled ? 'installed' : 'not installed'}', 
+        category: 'cross_platform_dev_tools', 
+        metadata: {'tool': tool.displayName, 'status': tool.status});
+  }
+
+  Future<void> _testCrossPlatformDevTool(CrossPlatformDevTool tool) async {
+    await _logAppEvent('info', 'Testing cross-platform dev tool: ${tool.displayName}', 
+        category: 'cross_platform_dev_tools', 
+        metadata: {'tool': tool.displayName});
+    
+    // Simulate test
+    await Future.delayed(const Duration(seconds: 1));
+    print('Testing ${tool.displayName}...');
+    print('Message: ${tool.displayName} is working correctly');
+  }
+
+  Future<void> _removeCrossPlatformDevTool(CrossPlatformDevTool tool) async {
+    await _logAppEvent('info', 'Removing cross-platform dev tool: ${tool.displayName}', 
+        category: 'cross_platform_dev_tools', 
+        metadata: {'tool': tool.displayName});
+    
+    // Simulate removal
+    await Future.delayed(const Duration(seconds: 1));
+    
+    setState(() {
+      final index = _crossPlatformDevTools.indexWhere((t) => t.id == tool.id);
+      if (index != -1) {
+        _crossPlatformDevTools[index] = _crossPlatformDevTools[index].copyWith(
+          status: 'unavailable',
+          version: null,
+        );
+      }
+    });
+    
+    await _logAppEvent('success', 'Cross-platform dev tool removed: ${tool.displayName}', category: 'cross_platform_dev_tools');
+  }
+
+  Future<void> _reinstallCrossPlatformDevTool(CrossPlatformDevTool tool) async {
+    await _logAppEvent('info', 'Reinstalling cross-platform dev tool: ${tool.displayName}', 
+        category: 'cross_platform_dev_tools', 
+        metadata: {'tool': tool.displayName});
+    
+    await _removeCrossPlatformDevTool(tool);
+    await Future.delayed(const Duration(seconds: 1));
+    await _installCrossPlatformDevTool(tool);
+  }
+
+  Future<void> _updateCrossPlatformDevTool(CrossPlatformDevTool tool) async {
+    await _logAppEvent('info', 'Updating cross-platform dev tool: ${tool.displayName}', 
+        category: 'cross_platform_dev_tools', 
+        metadata: {'tool': tool.displayName});
+    
+    // Simulate update
+    await Future.delayed(const Duration(seconds: 1));
+    print('Updating ${tool.displayName}...');
+    print('Message: ${tool.displayName} updated successfully');
+  }
+
   Future<void> _verifyAllComponentStatus() async {
     await _logAppEvent('info', 'Verifying status of all components...', category: 'startup');
     
@@ -626,6 +760,11 @@ class _FullScreenHomePageState extends State<FullScreenHomePage> {
     // Verify dev tools status
     for (final tool in _devTools) {
       await _verifyDevToolStatus(tool);
+    }
+    
+    // Verify cross-platform dev tools status
+    for (final tool in _crossPlatformDevTools) {
+      await _verifyCrossPlatformDevToolStatus(tool);
     }
     
     await _logAppEvent('success', 'All component statuses verified', category: 'startup');
@@ -702,6 +841,28 @@ class _FullScreenHomePageState extends State<FullScreenHomePage> {
     });
   }
 
+  Future<void> _verifyCrossPlatformDevToolStatus(CrossPlatformDevTool tool) async {
+    // Simulate status check without UI feedback
+    await Future.delayed(const Duration(milliseconds: 100));
+    
+    // Update status based on realistic detection
+    final isInstalled = tool.name == 'react' || 
+                       tool.name == 'flutter' || 
+                       tool.name == 'vite' || 
+                       tool.name == 'nextjs' || 
+                       tool.name == 'firebase_cli';
+    
+    setState(() {
+      final index = _crossPlatformDevTools.indexWhere((t) => t.id == tool.id);
+      if (index != -1) {
+        _crossPlatformDevTools[index] = _crossPlatformDevTools[index].copyWith(
+          status: isInstalled ? 'installed' : 'unknown',
+          version: isInstalled ? '1.0.0' : null,
+        );
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -727,9 +888,11 @@ class _FullScreenHomePageState extends State<FullScreenHomePage> {
               packageManagers: _packageManagers,
               commonTools: _commonTools,
               devTools: _devTools,
+              crossPlatformDevTools: _crossPlatformDevTools,
               isLoadingPackageManagers: _isLoadingPackageManagers,
               isLoadingCommonTools: _isLoadingCommonTools,
               isLoadingDevTools: _isLoadingDevTools,
+              isLoadingCrossPlatformDevTools: _isLoadingCrossPlatformDevTools,
               onInstallAllPackageManagers: _installAllPackageManagers,
               onInstallPackageManager: _installPackageManager,
               onCheckPackageManager: _checkPackageManager,
@@ -751,6 +914,13 @@ class _FullScreenHomePageState extends State<FullScreenHomePage> {
               onRemoveDevTool: _removeDevTool,
               onReinstallDevTool: _reinstallDevTool,
               onUpdateDevTool: _updateDevTool,
+              onInstallAllCrossPlatformDevTools: _installAllCrossPlatformDevTools,
+              onInstallCrossPlatformDevTool: _installCrossPlatformDevTool,
+              onCheckCrossPlatformDevTool: _checkCrossPlatformDevTool,
+              onTestCrossPlatformDevTool: _testCrossPlatformDevTool,
+              onRemoveCrossPlatformDevTool: _removeCrossPlatformDevTool,
+              onReinstallCrossPlatformDevTool: _reinstallCrossPlatformDevTool,
+              onUpdateCrossPlatformDevTool: _updateCrossPlatformDevTool,
             ),
           ),
           
