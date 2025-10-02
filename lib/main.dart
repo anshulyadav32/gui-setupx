@@ -401,7 +401,11 @@ class _FullScreenHomePageState extends State<FullScreenHomePage> {
                        tool.name == 'chrome' || 
                        tool.name == 'nodejs' || 
                        tool.name == 'firefox' || 
-                       tool.name == 'jdk';
+                       tool.name == 'jdk' ||
+                       tool.name == 'python' ||
+                       tool.name == 'docker' ||
+                       tool.name == 'terminal' ||
+                       tool.name == 'powertoys';
     
     setState(() {
       final index = _commonTools.indexWhere((t) => t.id == tool.id);

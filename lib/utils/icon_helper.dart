@@ -39,6 +39,18 @@ class IconHelper {
         return Icons.web;
       case 'terminal':
         return Icons.terminal;
+      case 'storage':
+        return Icons.storage;
+      case 'desktop_windows':
+        return Icons.desktop_windows;
+      case 'settings':
+        return Icons.settings;
+      case 'chat':
+        return Icons.chat;
+      case 'medical_services':
+        return Icons.medical_services;
+      case 'message':
+        return Icons.message;
       default:
         return Icons.build;
     }
