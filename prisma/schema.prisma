@@ -80,11 +80,32 @@ model NavigationItem {
   route     String?
   order     Int      @default(0)
   isActive  Boolean  @default(true)
+  category  String?  // dashboard, package_manager, server_management, common_tools
+  
+  // Relation to navbar
+  navbarId  String?
+  navbar    Navbar?  @relation(fields: [navbarId], references: [id], onDelete: Cascade)
   
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   
   @@map("navigation_items")
+}
+
+model Navbar {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  title     String
+  isActive  Boolean  @default(true)
+  order     Int      @default(0)
+  
+  // Navigation items
+  items     NavigationItem[]
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@map("navbars")
 }
 
 model SystemStatus {

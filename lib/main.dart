@@ -37,13 +37,8 @@ class _FullScreenHomePageState extends State<FullScreenHomePage> {
   int _selectedIndex = 0;
   Timer? _fullScreenTimer;
 
-  final List<String> _menuItems = [
-    'Home',
-    'Dashboard',
-    'Settings',
-    'Profile',
-    'Help',
-  ];
+  List<Map<String, dynamic>> _navbarItems = [];
+  String _selectedCategory = 'dashboard';
 
   @override
   void initState() {
@@ -66,6 +61,7 @@ class _FullScreenHomePageState extends State<FullScreenHomePage> {
     try {
       await PrismaClient.instance.initialize();
       await _loadUserSettings();
+      await _loadNavbarItems();
       await _logAppEvent('info', 'App initialized successfully', category: 'startup');
     } catch (e) {
       await _logAppEvent('error', 'Failed to initialize database: $e', category: 'startup');
@@ -83,6 +79,18 @@ class _FullScreenHomePageState extends State<FullScreenHomePage> {
       }
     } catch (e) {
       await _logAppEvent('error', 'Failed to load user settings: $e', category: 'settings');
+    }
+  }
+
+  Future<void> _loadNavbarItems() async {
+    try {
+      final items = await PrismaClient.instance.getNavbarItems();
+      setState(() {
+        _navbarItems = items;
+      });
+      await _logAppEvent('info', 'Navbar items loaded successfully', category: 'navbar');
+    } catch (e) {
+      await _logAppEvent('error', 'Failed to load navbar items: $e', category: 'navbar');
     }
   }
 
@@ -241,28 +249,40 @@ class _FullScreenHomePageState extends State<FullScreenHomePage> {
           // Menu Items
           Expanded(
             child: ListView.builder(
-              itemCount: _menuItems.length,
+              itemCount: _navbarItems.length,
               itemBuilder: (context, index) {
+                final item = _navbarItems[index];
+                final isSelected = _selectedCategory == item['category'];
+                
                 return Container(
                   margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
                   child: ListTile(
-                    selected: _selectedIndex == index,
+                    selected: isSelected,
                     selectedTileColor: Colors.blue.withOpacity(0.2),
                     leading: Icon(
-                      _getMenuIcon(index),
-                      color: _selectedIndex == index ? Colors.blue : Colors.white70,
+                      _getNavbarIcon(item['icon']),
+                      color: isSelected ? Colors.blue : Colors.white70,
                     ),
                     title: Text(
-                      _menuItems[index],
+                      item['name'],
                       style: TextStyle(
-                        color: _selectedIndex == index ? Colors.blue : Colors.white,
-                        fontWeight: _selectedIndex == index ? FontWeight.bold : FontWeight.normal,
+                        color: isSelected ? Colors.blue : Colors.white,
+                        fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
                       ),
                     ),
                     onTap: () {
                       setState(() {
+                        _selectedCategory = item['category'];
                         _selectedIndex = index;
                       });
+                      _logAppEvent('info', 'Navigation item selected: ${item['name']}', 
+                        category: 'navigation', 
+                        metadata: {
+                          'item': item['name'],
+                          'category': item['category'],
+                          'route': item['route'],
+                        }
+                      );
                     },
                   ),
                 );
@@ -453,7 +473,7 @@ class _FullScreenHomePageState extends State<FullScreenHomePage> {
                   ),
                   const SizedBox(height: 30),
                   Text(
-                    'Welcome to ${_menuItems[_selectedIndex]}',
+                    'Welcome to ${_navbarItems.isNotEmpty ? _navbarItems[_selectedIndex]['name'] : 'Dashboard'}',
                     style: const TextStyle(
                       fontSize: 32,
                       fontWeight: FontWeight.bold,
@@ -558,6 +578,16 @@ class _FullScreenHomePageState extends State<FullScreenHomePage> {
         ),
       ),
     );
+  }
+
+  IconData _getNavbarIcon(String? iconName) {
+    switch (iconName) {
+      case 'dashboard': return Icons.dashboard;
+      case 'package': return Icons.inventory;
+      case 'server': return Icons.dns;
+      case 'tools': return Icons.build;
+      default: return Icons.circle;
+    }
   }
 
   IconData _getMenuIcon(int index) {
