@@ -87,10 +87,58 @@ class _FullScreenHomePageState extends State<FullScreenHomePage> {
       final items = await PrismaClient.instance.getNavbarItems();
       setState(() {
         _navbarItems = items;
+        // Set default selection if items are loaded
+        if (items.isNotEmpty) {
+          _selectedCategory = items[0]['category'];
+          _selectedIndex = 0;
+        }
       });
-      await _logAppEvent('info', 'Navbar items loaded successfully', category: 'navbar');
+      await _logAppEvent('info', 'Navbar items loaded successfully: ${items.length} items', category: 'navbar');
     } catch (e) {
       await _logAppEvent('error', 'Failed to load navbar items: $e', category: 'navbar');
+      // Fallback to default items if database fails
+      setState(() {
+        _navbarItems = [
+          {
+            'id': '1',
+            'name': 'Dashboard',
+            'icon': 'dashboard',
+            'route': '/dashboard',
+            'order': 1,
+            'isActive': true,
+            'category': 'dashboard',
+          },
+          {
+            'id': '2',
+            'name': 'Package Manager',
+            'icon': 'package',
+            'route': '/package-manager',
+            'order': 2,
+            'isActive': true,
+            'category': 'package_manager',
+          },
+          {
+            'id': '3',
+            'name': 'Server Management',
+            'icon': 'server',
+            'route': '/server-management',
+            'order': 3,
+            'isActive': true,
+            'category': 'server_management',
+          },
+          {
+            'id': '4',
+            'name': 'Common Tools',
+            'icon': 'tools',
+            'route': '/common-tools',
+            'order': 4,
+            'isActive': true,
+            'category': 'common_tools',
+          },
+        ];
+        _selectedCategory = 'dashboard';
+        _selectedIndex = 0;
+      });
     }
   }
 
@@ -239,6 +287,11 @@ class _FullScreenHomePageState extends State<FullScreenHomePage> {
                 ),
                 const Spacer(),
                 IconButton(
+                  onPressed: _loadNavbarItems,
+                  icon: const Icon(Icons.refresh, color: Colors.white70, size: 20),
+                  tooltip: 'Refresh Navigation',
+                ),
+                IconButton(
                   onPressed: _toggleLeftSidebar,
                   icon: const Icon(Icons.close, color: Colors.white70),
                 ),
@@ -248,46 +301,60 @@ class _FullScreenHomePageState extends State<FullScreenHomePage> {
           
           // Menu Items
           Expanded(
-            child: ListView.builder(
-              itemCount: _navbarItems.length,
-              itemBuilder: (context, index) {
-                final item = _navbarItems[index];
-                final isSelected = _selectedCategory == item['category'];
-                
-                return Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
-                  child: ListTile(
-                    selected: isSelected,
-                    selectedTileColor: Colors.blue.withOpacity(0.2),
-                    leading: Icon(
-                      _getNavbarIcon(item['icon']),
-                      color: isSelected ? Colors.blue : Colors.white70,
-                    ),
-                    title: Text(
-                      item['name'],
-                      style: TextStyle(
-                        color: isSelected ? Colors.blue : Colors.white,
-                        fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+            child: _navbarItems.isEmpty 
+              ? const Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      CircularProgressIndicator(color: Colors.white70),
+                      SizedBox(height: 16),
+                      Text(
+                        'Loading navigation...',
+                        style: TextStyle(color: Colors.white70),
                       ),
-                    ),
-                    onTap: () {
-                      setState(() {
-                        _selectedCategory = item['category'];
-                        _selectedIndex = index;
-                      });
-                      _logAppEvent('info', 'Navigation item selected: ${item['name']}', 
-                        category: 'navigation', 
-                        metadata: {
-                          'item': item['name'],
-                          'category': item['category'],
-                          'route': item['route'],
-                        }
-                      );
-                    },
+                    ],
                   ),
-                );
-              },
-            ),
+                )
+              : ListView.builder(
+                  itemCount: _navbarItems.length,
+                  itemBuilder: (context, index) {
+                    final item = _navbarItems[index];
+                    final isSelected = _selectedCategory == item['category'];
+                    
+                    return Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
+                      child: ListTile(
+                        selected: isSelected,
+                        selectedTileColor: Colors.blue.withOpacity(0.2),
+                        leading: Icon(
+                          _getNavbarIcon(item['icon']),
+                          color: isSelected ? Colors.blue : Colors.white70,
+                        ),
+                        title: Text(
+                          item['name'],
+                          style: TextStyle(
+                            color: isSelected ? Colors.blue : Colors.white,
+                            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                          ),
+                        ),
+                        onTap: () {
+                          setState(() {
+                            _selectedCategory = item['category'];
+                            _selectedIndex = index;
+                          });
+                          _logAppEvent('info', 'Navigation item selected: ${item['name']}', 
+                            category: 'navigation', 
+                            metadata: {
+                              'item': item['name'],
+                              'category': item['category'],
+                              'route': item['route'],
+                            }
+                          );
+                        },
+                      ),
+                    );
+                  },
+                ),
           ),
           
           // Sidebar Footer
@@ -298,13 +365,24 @@ class _FullScreenHomePageState extends State<FullScreenHomePage> {
                 top: BorderSide(color: Colors.white24, width: 1),
               ),
             ),
-            child: const Row(
+            child: Row(
               children: [
-                Icon(Icons.info_outline, color: Colors.white70, size: 20),
-                SizedBox(width: 10),
-                Text(
-                  'Full Screen App',
-                  style: TextStyle(color: Colors.white70, fontSize: 12),
+                const Icon(Icons.info_outline, color: Colors.white70, size: 20),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Full Screen App',
+                        style: TextStyle(color: Colors.white70, fontSize: 12),
+                      ),
+                      Text(
+                        '${_navbarItems.length} nav items',
+                        style: const TextStyle(color: Colors.white54, fontSize: 10),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
