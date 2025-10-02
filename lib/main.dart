@@ -40,6 +40,7 @@ class _FullScreenHomePageState extends State<FullScreenHomePage> {
   List<Map<String, dynamic>> _navbarItems = [];
   List<Map<String, dynamic>> _packageManagers = [];
   String _selectedCategory = 'dashboard';
+  List<Map<String, dynamic>> _actionLogs = [];
 
   @override
   void initState() {
@@ -167,11 +168,13 @@ class _FullScreenHomePageState extends State<FullScreenHomePage> {
   // Package Manager Actions
   Future<void> _installAllPackageManagers() async {
     await _logAppEvent('info', 'Installing all package managers', category: 'package_managers');
+    _addActionLog('Installing all package managers...', 'info');
     
     for (final manager in _packageManagers) {
       await _installPackageManager(manager);
     }
     
+    _addActionLog('All package managers installation completed', 'success');
     // Refresh package managers after installation
     await _loadPackageManagers();
   }
@@ -188,12 +191,16 @@ class _FullScreenHomePageState extends State<FullScreenHomePage> {
       }
     );
     
+    _addActionLog('Installing $name...', 'info');
+    
     // TODO: Implement actual installation logic
     // This would typically execute the install command
     print('Installing $name with command: $installCommand');
     
     // Simulate installation success
     await Future.delayed(const Duration(seconds: 1));
+    
+    _addActionLog('$name installed successfully', 'success');
     
     // Update status in database
     await PrismaClient.instance.updatePackageManager(
@@ -213,14 +220,15 @@ class _FullScreenHomePageState extends State<FullScreenHomePage> {
       metadata: {'manager': name}
     );
     
+    _addActionLog('Checking $name status...', 'info');
+    
     // TODO: Implement actual check logic
     print('Checking $name status...');
     
     // Simulate check
     await Future.delayed(const Duration(milliseconds: 500));
     
-    // Show result (in a real app, this would show actual status)
-    _showMessage('$name is working correctly');
+    _addActionLog('$name is working correctly', 'success');
   }
 
   Future<void> _testEnvPath(Map<String, dynamic> manager) async {
@@ -231,14 +239,15 @@ class _FullScreenHomePageState extends State<FullScreenHomePage> {
       metadata: {'manager': name}
     );
     
+    _addActionLog('Testing environment path for $name...', 'info');
+    
     // TODO: Implement actual path testing
     print('Testing environment path for $name...');
     
     // Simulate path test
     await Future.delayed(const Duration(milliseconds: 500));
     
-    // Show result
-    _showMessage('$name path is correctly configured');
+    _addActionLog('$name path is correctly configured', 'success');
   }
 
   Future<void> _removePackageManager(Map<String, dynamic> manager) async {
@@ -253,11 +262,15 @@ class _FullScreenHomePageState extends State<FullScreenHomePage> {
       }
     );
     
+    _addActionLog('Removing $name...', 'info');
+    
     // TODO: Implement actual removal logic
     print('Removing $name with command: $uninstallCommand');
     
     // Simulate removal
     await Future.delayed(const Duration(seconds: 1));
+    
+    _addActionLog('$name removed successfully', 'success');
     
     // Update status in database
     await PrismaClient.instance.updatePackageManager(
@@ -277,10 +290,14 @@ class _FullScreenHomePageState extends State<FullScreenHomePage> {
       metadata: {'manager': name}
     );
     
+    _addActionLog('Reinstalling $name...', 'info');
+    
     // First remove, then install
     await _removePackageManager(manager);
     await Future.delayed(const Duration(seconds: 1));
     await _installPackageManager(manager);
+    
+    _addActionLog('$name reinstalled successfully', 'success');
   }
 
   Future<void> _updatePackageManager(Map<String, dynamic> manager) async {
@@ -295,13 +312,30 @@ class _FullScreenHomePageState extends State<FullScreenHomePage> {
       }
     );
     
+    _addActionLog('Updating $name...', 'info');
+    
     // TODO: Implement actual update logic
     print('Updating $name with command: $updateCommand');
     
     // Simulate update
     await Future.delayed(const Duration(seconds: 1));
     
-    _showMessage('$name updated successfully');
+    _addActionLog('$name updated successfully', 'success');
+  }
+
+  void _addActionLog(String message, String level) {
+    setState(() {
+      _actionLogs.insert(0, {
+        'message': message,
+        'level': level,
+        'timestamp': DateTime.now(),
+      });
+      
+      // Keep only last 50 logs
+      if (_actionLogs.length > 50) {
+        _actionLogs = _actionLogs.take(50).toList();
+      }
+    });
   }
 
   void _showMessage(String message) {
@@ -1042,64 +1076,55 @@ class _FullScreenHomePageState extends State<FullScreenHomePage> {
             ),
           ),
           
-          // Dashboard Content
+          // Action Logs Content
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'System Status',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  Row(
+                    children: [
+                      const Text(
+                        'Action Logs',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const Spacer(),
+                      IconButton(
+                        onPressed: () {
+                          setState(() {
+                            _actionLogs.clear();
+                          });
+                        },
+                        icon: const Icon(Icons.clear, color: Colors.white70, size: 20),
+                        tooltip: 'Clear Logs',
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 15),
-                  FutureBuilder<Map<String, dynamic>?>(
-                    future: PrismaClient.instance.getSystemStatus(),
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        final status = snapshot.data!;
-                        return Column(
-                          children: [
-                            _buildStatusCard('CPU Usage', '${status['cpuUsage']?.toStringAsFixed(1) ?? '45.0'}%', Icons.memory, Colors.green),
-                            const SizedBox(height: 10),
-                            _buildStatusCard('Memory', '${status['memoryUsage']?.toStringAsFixed(1) ?? '2.1'}GB / 8GB', Icons.storage, Colors.orange),
-                            const SizedBox(height: 10),
-                            _buildStatusCard('Network', status['networkStatus'] ?? 'Connected', Icons.wifi, Colors.blue),
-                          ],
-                        );
-                      }
-                      return Column(
-                        children: [
-                          _buildStatusCard('CPU Usage', '45%', Icons.memory, Colors.green),
-                          const SizedBox(height: 10),
-                          _buildStatusCard('Memory', '2.1GB / 8GB', Icons.storage, Colors.orange),
-                          const SizedBox(height: 10),
-                          _buildStatusCard('Network', 'Connected', Icons.wifi, Colors.blue),
-                        ],
-                      );
-                    },
+                  Expanded(
+                    child: _actionLogs.isEmpty
+                        ? const Center(
+                            child: Text(
+                              'No actions performed yet',
+                              style: TextStyle(
+                                color: Colors.white70,
+                                fontSize: 14,
+                              ),
+                            ),
+                          )
+                        : ListView.builder(
+                            itemCount: _actionLogs.length,
+                            itemBuilder: (context, index) {
+                              final log = _actionLogs[index];
+                              return _buildActionLogItem(log);
+                            },
+                          ),
                   ),
-                  
-                  const SizedBox(height: 30),
-                  const Text(
-                    'Quick Actions',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 15),
-                  _buildActionButton('Refresh', Icons.refresh),
-                  const SizedBox(height: 10),
-                  _buildActionButton('Settings', Icons.settings),
-                  const SizedBox(height: 10),
-                  _buildActionButton('Help', Icons.help_outline),
                 ],
               ),
             ),
