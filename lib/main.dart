@@ -464,6 +464,124 @@ class _FullScreenHomePageState extends State<FullScreenHomePage> {
     await Future.delayed(const Duration(seconds: 1));
     
     _addActionLog('$name installed successfully', 'success');
+    
+    // Update status
+    setState(() {
+      final index = _commonTools.indexWhere((t) => t['id'] == tool['id']);
+      if (index != -1) {
+        _commonTools[index]['status'] = 'installed';
+      }
+    });
+  }
+
+  Future<void> _checkCommonTool(Map<String, dynamic> tool) async {
+    final name = tool['name'] ?? 'Unknown';
+    
+    await _logAppEvent('info', 'Checking common tool: $name', 
+      category: 'common_tools',
+      metadata: {'tool': name}
+    );
+    
+    _addActionLog('Checking $name status...', 'info');
+    
+    // TODO: Implement actual check logic
+    print('Checking $name status...');
+    
+    // Simulate check
+    await Future.delayed(const Duration(milliseconds: 500));
+    
+    _addActionLog('$name is working correctly', 'success');
+  }
+
+  Future<void> _testCommonTool(Map<String, dynamic> tool) async {
+    final name = tool['name'] ?? 'Unknown';
+    
+    await _logAppEvent('info', 'Testing common tool: $name', 
+      category: 'common_tools',
+      metadata: {'tool': name}
+    );
+    
+    _addActionLog('Testing $name...', 'info');
+    
+    // TODO: Implement actual test logic
+    print('Testing $name...');
+    
+    // Simulate test
+    await Future.delayed(const Duration(milliseconds: 500));
+    
+    _addActionLog('$name test passed', 'success');
+  }
+
+  Future<void> _removeCommonTool(Map<String, dynamic> tool) async {
+    final name = tool['name'] ?? 'Unknown';
+    final uninstallCommand = tool['uninstallCommand'] ?? '';
+    
+    await _logAppEvent('info', 'Removing common tool: $name', 
+      category: 'common_tools',
+      metadata: {
+        'tool': name,
+        'command': uninstallCommand,
+      }
+    );
+    
+    _addActionLog('Removing $name...', 'info');
+    
+    // TODO: Implement actual removal logic
+    print('Removing $name with command: $uninstallCommand');
+    
+    // Simulate removal
+    await Future.delayed(const Duration(seconds: 1));
+    
+    _addActionLog('$name removed successfully', 'success');
+    
+    // Update status
+    setState(() {
+      final index = _commonTools.indexWhere((t) => t['id'] == tool['id']);
+      if (index != -1) {
+        _commonTools[index]['status'] = 'unavailable';
+      }
+    });
+  }
+
+  Future<void> _reinstallCommonTool(Map<String, dynamic> tool) async {
+    final name = tool['name'] ?? 'Unknown';
+    
+    await _logAppEvent('info', 'Reinstalling common tool: $name', 
+      category: 'common_tools',
+      metadata: {'tool': name}
+    );
+    
+    _addActionLog('Reinstalling $name...', 'info');
+    
+    // First remove, then install
+    await _removeCommonTool(tool);
+    await Future.delayed(const Duration(seconds: 1));
+    await _installCommonTool(tool);
+    
+    _addActionLog('$name reinstalled successfully', 'success');
+  }
+
+  Future<void> _updateCommonTool(Map<String, dynamic> tool) async {
+    final name = tool['name'] ?? 'Unknown';
+    final updateCommand = tool['updateCommand'] ?? '';
+    
+    await _logAppEvent('info', 'Updating common tool: $name', 
+      category: 'common_tools',
+      metadata: {
+        'tool': name,
+        'command': updateCommand,
+      }
+    );
+    
+    _addActionLog('Updating $name...', 'info');
+    
+    // TODO: Implement actual update logic
+    print('Updating $name with command: $updateCommand');
+    
+    // Simulate update
+    await Future.delayed(const Duration(seconds: 1));
+    
+    _addActionLog('$name updated successfully', 'success');
   }
 
   void _addActionLog(String message, String level) {
@@ -595,140 +713,149 @@ class _FullScreenHomePageState extends State<FullScreenHomePage> {
   }
 
   Widget _buildLeftSidebar() {
-    return Container(
-      width: 250,
-      decoration: const BoxDecoration(
-        color: Color(0xFF0f1419),
-        border: Border(
-          right: BorderSide(color: Colors.white24, width: 1),
-        ),
-      ),
-      child: Column(
-        children: [
-          // Sidebar Header
-          Container(
-            padding: const EdgeInsets.all(20),
-            decoration: const BoxDecoration(
-              border: Border(
-                bottom: BorderSide(color: Colors.white24, width: 1),
-              ),
-            ),
-            child: Row(
-              children: [
-                const Icon(Icons.menu, color: Colors.white, size: 24),
-                const SizedBox(width: 10),
-                const Text(
-                  'Navigation',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const Spacer(),
-                IconButton(
-                  onPressed: _loadNavbarItems,
-                  icon: const Icon(Icons.refresh, color: Colors.white70, size: 20),
-                  tooltip: 'Refresh Navigation',
-                ),
-                IconButton(
-                  onPressed: _toggleLeftSidebar,
-                  icon: const Icon(Icons.close, color: Colors.white70),
-                ),
-              ],
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final isMobile = constraints.maxWidth < 600;
+        final sidebarWidth = isMobile ? 200.0 : 250.0;
+        
+        return Container(
+          width: sidebarWidth,
+          decoration: const BoxDecoration(
+            color: Color(0xFF0f1419),
+            border: Border(
+              right: BorderSide(color: Colors.white24, width: 1),
             ),
           ),
-          
-          // Menu Items
-          Expanded(
-            child: _navbarItems.isEmpty 
-              ? const Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      CircularProgressIndicator(color: Colors.white70),
-                      SizedBox(height: 16),
-                      Text(
-                        'Loading navigation...',
-                        style: TextStyle(color: Colors.white70),
-                      ),
-                    ],
+          child: Column(
+            children: [
+              // Sidebar Header
+              Container(
+                padding: EdgeInsets.all(isMobile ? 16 : 20),
+                decoration: const BoxDecoration(
+                  border: Border(
+                    bottom: BorderSide(color: Colors.white24, width: 1),
                   ),
-                )
-              : ListView.builder(
-                  itemCount: _navbarItems.length,
-                  itemBuilder: (context, index) {
-                    final item = _navbarItems[index];
-                    final isSelected = _selectedCategory == item['category'];
-                    
-                    return Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
-                      child: ListTile(
-                        selected: isSelected,
-                        selectedTileColor: Colors.blue.withOpacity(0.2),
-                        leading: Icon(
-                          _getNavbarIcon(item['icon']),
-                          color: isSelected ? Colors.blue : Colors.white70,
-                        ),
-                        title: Text(
-                          item['name'],
-                          style: TextStyle(
-                            color: isSelected ? Colors.blue : Colors.white,
-                            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                ),
+                child: Row(
+                  children: [
+                    Icon(Icons.menu, color: Colors.white, size: isMobile ? 20 : 24),
+                    SizedBox(width: isMobile ? 8 : 10),
+                    Text(
+                      'Navigation',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: isMobile ? 16 : 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const Spacer(),
+                    IconButton(
+                      onPressed: _loadNavbarItems,
+                      icon: Icon(Icons.refresh, color: Colors.white70, size: isMobile ? 18 : 20),
+                      tooltip: 'Refresh Navigation',
+                    ),
+                    IconButton(
+                      onPressed: _toggleLeftSidebar,
+                      icon: Icon(Icons.close, color: Colors.white70, size: isMobile ? 18 : 24),
+                    ),
+                  ],
+                ),
+              ),
+          
+              // Menu Items
+              Expanded(
+                child: _navbarItems.isEmpty 
+                  ? const Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          CircularProgressIndicator(color: Colors.white70),
+                          SizedBox(height: 16),
+                          Text(
+                            'Loading navigation...',
+                            style: TextStyle(color: Colors.white70),
                           ),
-                        ),
-                        onTap: () {
-                          setState(() {
-                            _selectedCategory = item['category'];
-                            _selectedIndex = index;
-                          });
-                          _logAppEvent('info', 'Navigation item selected: ${item['name']}', 
-                            category: 'navigation', 
-                            metadata: {
-                              'item': item['name'],
-                              'category': item['category'],
-                              'route': item['route'],
-                            }
-                          );
-                        },
+                        ],
                       ),
-                    );
-                  },
-                ),
-          ),
-          
-          // Sidebar Footer
-          Container(
-            padding: const EdgeInsets.all(20),
-            decoration: const BoxDecoration(
-              border: Border(
-                top: BorderSide(color: Colors.white24, width: 1),
+                    )
+                  : ListView.builder(
+                      itemCount: _navbarItems.length,
+                      itemBuilder: (context, index) {
+                        final item = _navbarItems[index];
+                        final isSelected = _selectedCategory == item['category'];
+                        
+                        return Container(
+                          margin: EdgeInsets.symmetric(horizontal: isMobile ? 8 : 10, vertical: 2),
+                          child: ListTile(
+                            selected: isSelected,
+                            selectedTileColor: Colors.blue.withOpacity(0.2),
+                            leading: Icon(
+                              _getNavbarIcon(item['icon']),
+                              color: isSelected ? Colors.blue : Colors.white70,
+                              size: isMobile ? 18 : 20,
+                            ),
+                            title: Text(
+                              item['name'],
+                              style: TextStyle(
+                                color: isSelected ? Colors.blue : Colors.white,
+                                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                                fontSize: isMobile ? 13 : 14,
+                              ),
+                            ),
+                            onTap: () {
+                              setState(() {
+                                _selectedCategory = item['category'];
+                                _selectedIndex = index;
+                              });
+                              _logAppEvent('info', 'Navigation item selected: ${item['name']}', 
+                                category: 'navigation', 
+                                metadata: {
+                                  'item': item['name'],
+                                  'category': item['category'],
+                                  'route': item['route'],
+                                }
+                              );
+                            },
+                          ),
+                        );
+                      },
+                    ),
               ),
-            ),
-            child: Row(
-              children: [
-                const Icon(Icons.info_outline, color: Colors.white70, size: 20),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Full Screen App',
-                        style: TextStyle(color: Colors.white70, fontSize: 12),
-                      ),
-                      Text(
-                        '${_navbarItems.length} nav items',
-                        style: const TextStyle(color: Colors.white54, fontSize: 10),
-                      ),
-                    ],
+              
+              // Sidebar Footer
+              Container(
+                padding: EdgeInsets.all(isMobile ? 12 : 20),
+                decoration: const BoxDecoration(
+                  border: Border(
+                    top: BorderSide(color: Colors.white24, width: 1),
                   ),
                 ),
-              ],
-            ),
+                child: Row(
+                  children: [
+                    Icon(Icons.info_outline, color: Colors.white70, size: isMobile ? 16 : 20),
+                    SizedBox(width: isMobile ? 8 : 10),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Full Screen App',
+                            style: TextStyle(color: Colors.white70, fontSize: isMobile ? 10 : 12),
+                          ),
+                          Text(
+                            '${_navbarItems.length} nav items',
+                            style: TextStyle(color: Colors.white54, fontSize: isMobile ? 9 : 10),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 
@@ -1144,216 +1271,271 @@ class _FullScreenHomePageState extends State<FullScreenHomePage> {
   }
 
   Widget _buildCommonToolsView() {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Icon(
-            Icons.build,
-            size: 80,
-            color: Colors.white,
-          ),
-          const SizedBox(height: 30),
-          const Text(
-            'Common Development Tools',
-            style: TextStyle(
-              fontSize: 28,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 20),
-          // Install All Button
-          Container(
-            margin: const EdgeInsets.symmetric(horizontal: 40),
-            child: ElevatedButton.icon(
-              onPressed: _installAllCommonTools,
-              icon: const Icon(Icons.download, color: Colors.white),
-              label: const Text(
-                'Install All Common Tools',
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        // Responsive breakpoints
+        final isMobile = constraints.maxWidth < 600;
+        final isTablet = constraints.maxWidth < 1000;
+        final isDesktop = constraints.maxWidth >= 1000;
+        
+        // Calculate grid columns based on screen size
+        int crossAxisCount;
+        double childAspectRatio;
+        double horizontalMargin;
+        double iconSize;
+        double titleFontSize;
+        
+        if (isMobile) {
+          crossAxisCount = 1;
+          childAspectRatio = 2.5;
+          horizontalMargin = 20;
+          iconSize = 60;
+          titleFontSize = 24;
+        } else if (isTablet) {
+          crossAxisCount = 2;
+          childAspectRatio = 2.0;
+          horizontalMargin = 30;
+          iconSize = 70;
+          titleFontSize = 26;
+        } else {
+          crossAxisCount = 3;
+          childAspectRatio = 1.6;
+          horizontalMargin = 40;
+          iconSize = 80;
+          titleFontSize = 28;
+        }
+        
+        return Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.build,
+                size: iconSize,
+                color: Colors.white,
+              ),
+              SizedBox(height: isMobile ? 20 : 30),
+              Text(
+                'Common Development Tools',
                 style: TextStyle(
-                  fontSize: 16,
+                  fontSize: titleFontSize,
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
                 ),
+                textAlign: TextAlign.center,
               ),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green,
-                padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
+              SizedBox(height: isMobile ? 15 : 20),
+              // Install All Button
+              Container(
+                margin: EdgeInsets.symmetric(horizontal: horizontalMargin),
+                child: ElevatedButton.icon(
+                  onPressed: _installAllCommonTools,
+                  icon: Icon(Icons.download, color: Colors.white),
+                  label: Text(
+                    'Install All Common Tools',
+                    style: TextStyle(
+                      fontSize: isMobile ? 14 : 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.green,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: isMobile ? 20 : 30, 
+                      vertical: isMobile ? 12 : 15
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
                 ),
               ),
-            ),
-          ),
-          const SizedBox(height: 20),
-          Expanded(
-            child: Container(
-              margin: const EdgeInsets.symmetric(horizontal: 40),
-              child: GridView.builder(
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 20,
-                  mainAxisSpacing: 20,
-                  childAspectRatio: 1.8,
+              SizedBox(height: isMobile ? 15 : 20),
+              Expanded(
+                child: Container(
+                  margin: EdgeInsets.symmetric(horizontal: horizontalMargin),
+                  child: GridView.builder(
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: crossAxisCount,
+                      crossAxisSpacing: isMobile ? 10 : 20,
+                      mainAxisSpacing: isMobile ? 10 : 20,
+                      childAspectRatio: childAspectRatio,
+                    ),
+                    itemCount: _commonTools.length,
+                    itemBuilder: (context, index) {
+                      final tool = _commonTools[index];
+                      return _buildCommonToolCard(tool);
+                    },
+                  ),
                 ),
-                itemCount: _commonTools.length,
-                itemBuilder: (context, index) {
-                  final tool = _commonTools[index];
-                  return _buildCommonToolCard(tool);
-                },
               ),
-            ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 
   Widget _buildRightSidebar() {
-    return Container(
-      width: 300,
-      decoration: const BoxDecoration(
-        color: Color(0xFF0f1419),
-        border: Border(
-          left: BorderSide(color: Colors.white24, width: 1),
-        ),
-      ),
-      child: Column(
-        children: [
-          // Sidebar Header
-          Container(
-            padding: const EdgeInsets.all(20),
-            decoration: const BoxDecoration(
-              border: Border(
-                bottom: BorderSide(color: Colors.white24, width: 1),
-              ),
-            ),
-            child: Row(
-              children: [
-                const Icon(Icons.dashboard, color: Colors.white, size: 24),
-                const SizedBox(width: 10),
-                const Text(
-                  'Dashboard',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const Spacer(),
-                IconButton(
-                  onPressed: _toggleRightSidebar,
-                  icon: const Icon(Icons.close, color: Colors.white70),
-                ),
-              ],
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final isMobile = constraints.maxWidth < 600;
+        final sidebarWidth = isMobile ? 250.0 : 300.0;
+        
+        return Container(
+          width: sidebarWidth,
+          decoration: const BoxDecoration(
+            color: Color(0xFF0f1419),
+            border: Border(
+              left: BorderSide(color: Colors.white24, width: 1),
             ),
           ),
-          
-          // Action Logs Content
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      const Text(
-                        'Action Logs',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
+          child: Column(
+            children: [
+              // Sidebar Header
+              Container(
+                padding: EdgeInsets.all(isMobile ? 16 : 20),
+                decoration: const BoxDecoration(
+                  border: Border(
+                    bottom: BorderSide(color: Colors.white24, width: 1),
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    Icon(Icons.dashboard, color: Colors.white, size: isMobile ? 20 : 24),
+                    SizedBox(width: isMobile ? 8 : 10),
+                    Text(
+                      'Action Logs',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: isMobile ? 16 : 18,
+                        fontWeight: FontWeight.bold,
                       ),
-                      const Spacer(),
-                      IconButton(
-                        onPressed: () {
-                          setState(() {
-                            _actionLogs.clear();
-                          });
-                        },
-                        icon: const Icon(Icons.clear, color: Colors.white70, size: 20),
-                        tooltip: 'Clear Logs',
+                    ),
+                    const Spacer(),
+                    IconButton(
+                      onPressed: _toggleRightSidebar,
+                      icon: Icon(Icons.close, color: Colors.white70, size: isMobile ? 18 : 24),
+                    ),
+                  ],
+                ),
+              ),
+              
+              // Action Logs Content
+              Expanded(
+                child: Padding(
+                  padding: EdgeInsets.all(isMobile ? 12 : 20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Text(
+                            'Recent Actions',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: isMobile ? 14 : 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const Spacer(),
+                          IconButton(
+                            onPressed: () {
+                              setState(() {
+                                _actionLogs.clear();
+                              });
+                            },
+                            icon: Icon(Icons.clear, color: Colors.white70, size: isMobile ? 16 : 20),
+                            tooltip: 'Clear Logs',
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: isMobile ? 10 : 15),
+                      Expanded(
+                        child: _actionLogs.isEmpty
+                            ? Center(
+                                child: Text(
+                                  'No actions performed yet',
+                                  style: TextStyle(
+                                    color: Colors.white70,
+                                    fontSize: isMobile ? 12 : 14,
+                                  ),
+                                ),
+                              )
+                            : ListView.builder(
+                                itemCount: _actionLogs.length,
+                                itemBuilder: (context, index) {
+                                  final log = _actionLogs[index];
+                                  return _buildActionLogItem(log);
+                                },
+                              ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 15),
-                  Expanded(
-                    child: _actionLogs.isEmpty
-                        ? const Center(
-                            child: Text(
-                              'No actions performed yet',
-                              style: TextStyle(
-                                color: Colors.white70,
-                                fontSize: 14,
-                              ),
-                            ),
-                          )
-                        : ListView.builder(
-                            itemCount: _actionLogs.length,
-                            itemBuilder: (context, index) {
-                              final log = _actionLogs[index];
-                              return _buildActionLogItem(log);
-                            },
-                          ),
-                  ),
-                ],
+                ),
               ),
-            ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 
   Widget _buildMainContent() {
-    return SafeArea(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          // Top Controls
-          Padding(
-            padding: const EdgeInsets.all(20),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                IconButton(
-                  onPressed: _toggleLeftSidebar,
-                  icon: Icon(
-                    _leftSidebarVisible ? Icons.menu_open : Icons.menu,
-                    color: Colors.white,
-                    size: 30,
-                  ),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final isMobile = constraints.maxWidth < 600;
+        final iconSize = isMobile ? 24.0 : 30.0;
+        final titleFontSize = isMobile ? 18.0 : 24.0;
+        final padding = isMobile ? 12.0 : 20.0;
+        
+        return SafeArea(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // Top Controls
+              Padding(
+                padding: EdgeInsets.all(padding),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    IconButton(
+                      onPressed: _toggleLeftSidebar,
+                      icon: Icon(
+                        _leftSidebarVisible ? Icons.menu_open : Icons.menu,
+                        color: Colors.white,
+                        size: iconSize,
+                      ),
+                    ),
+                    Text(
+                      isMobile ? 'Flutter App' : 'Full Screen Flutter App',
+                      style: TextStyle(
+                        fontSize: titleFontSize,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: _toggleRightSidebar,
+                      icon: Icon(
+                        _rightSidebarVisible ? Icons.dashboard_outlined : Icons.dashboard,
+                        color: Colors.white,
+                        size: iconSize,
+                      ),
+                    ),
+                  ],
                 ),
-                const Text(
-                  'Full Screen Flutter App',
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-                IconButton(
-                  onPressed: _toggleRightSidebar,
-                  icon: Icon(
-                    _rightSidebarVisible ? Icons.dashboard_outlined : Icons.dashboard,
-                    color: Colors.white,
-                    size: 30,
-                  ),
-                ),
-              ],
-            ),
+              ),
+              
+              // Main Content
+              Expanded(
+                child: _buildContentForSelectedCategory(),
+              ),
+            ],
           ),
-          
-          // Main Content
-          Expanded(
-            child: _buildContentForSelectedCategory(),
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 
@@ -1395,6 +1577,7 @@ class _FullScreenHomePageState extends State<FullScreenHomePage> {
     final colorHex = tool['color'] ?? '#007ACC';
     final status = tool['status'] ?? 'available';
     final description = tool['description'] ?? '';
+    final isInstalled = status == 'installed';
     
     // Parse hex color
     Color color;
@@ -1406,6 +1589,27 @@ class _FullScreenHomePageState extends State<FullScreenHomePage> {
     
     // Get icon
     IconData icon = _getCommonToolIcon(iconName);
+    
+    // Get status color
+    Color statusColor;
+    String statusText;
+    switch (status) {
+      case 'installed':
+        statusColor = Colors.green;
+        statusText = 'Installed';
+        break;
+      case 'unavailable':
+        statusColor = Colors.red;
+        statusText = 'Not Installed';
+        break;
+      case 'error':
+        statusColor = Colors.orange;
+        statusText = 'Error';
+        break;
+      default:
+        statusColor = Colors.grey;
+        statusText = 'Unknown';
+    }
     
     return Container(
       decoration: BoxDecoration(
@@ -1450,25 +1654,128 @@ class _FullScreenHomePageState extends State<FullScreenHomePage> {
                     ],
                   ),
                 ),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: statusColor.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Text(
+                    statusText,
+                    style: TextStyle(
+                      fontSize: 10,
+                      color: statusColor,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
               ],
             ),
             const SizedBox(height: 12),
-            // Install button
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                onPressed: () => _installCommonTool(tool),
-                icon: const Icon(Icons.download, size: 16),
-                label: const Text('Install', style: TextStyle(fontSize: 12)),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green,
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(6),
+            // Action buttons
+            if (!isInstalled) ...[
+              // Install button for not installed
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  onPressed: () => _installCommonTool(tool),
+                  icon: const Icon(Icons.download, size: 16),
+                  label: const Text('Install', style: TextStyle(fontSize: 12)),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.green,
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(6),
+                    ),
                   ),
                 ),
               ),
-            ),
+            ] else ...[
+              // Action buttons for installed tools
+              Row(
+                children: [
+                  Expanded(
+                    child: ElevatedButton.icon(
+                      onPressed: () => _checkCommonTool(tool),
+                      icon: const Icon(Icons.check_circle, size: 14),
+                      label: const Text('Check', style: TextStyle(fontSize: 10)),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blue,
+                        padding: const EdgeInsets.symmetric(vertical: 6),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 4),
+                  Expanded(
+                    child: ElevatedButton.icon(
+                      onPressed: () => _testCommonTool(tool),
+                      icon: const Icon(Icons.route, size: 14),
+                      label: const Text('Test', style: TextStyle(fontSize: 10)),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.purple,
+                        padding: const EdgeInsets.symmetric(vertical: 6),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 4),
+              Row(
+                children: [
+                  Expanded(
+                    child: ElevatedButton.icon(
+                      onPressed: () => _removeCommonTool(tool),
+                      icon: const Icon(Icons.delete, size: 14),
+                      label: const Text('Remove', style: TextStyle(fontSize: 10)),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red,
+                        padding: const EdgeInsets.symmetric(vertical: 6),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 4),
+                  Expanded(
+                    child: ElevatedButton.icon(
+                      onPressed: () => _reinstallCommonTool(tool),
+                      icon: const Icon(Icons.refresh, size: 14),
+                      label: const Text('Reinstall', style: TextStyle(fontSize: 10)),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.orange,
+                        padding: const EdgeInsets.symmetric(vertical: 6),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 4),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  onPressed: () => _updateCommonTool(tool),
+                  icon: const Icon(Icons.upgrade, size: 14),
+                  label: const Text('Update', style: TextStyle(fontSize: 10)),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.teal,
+                    padding: const EdgeInsets.symmetric(vertical: 6),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ],
         ),
       ),
