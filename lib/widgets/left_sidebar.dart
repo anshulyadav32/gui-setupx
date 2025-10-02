@@ -47,15 +47,16 @@ class LeftSidebar extends StatelessWidget {
                   children: [
                     Icon(Icons.menu, color: Colors.white, size: isMobile ? 20 : 24),
                     SizedBox(width: isMobile ? 8 : 10),
-                    Text(
-                      'Navigation',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: isMobile ? 16 : 18,
-                        fontWeight: FontWeight.bold,
+                    Expanded(
+                      child: Text(
+                        'Navigation',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: isMobile ? 16 : 18,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
-                    const Spacer(),
                     IconButton(
                       onPressed: onRefreshNavbar,
                       icon: Icon(Icons.refresh, color: Colors.white70, size: isMobile ? 18 : 20),
@@ -158,7 +159,7 @@ class LeftSidebar extends StatelessWidget {
       case 'dashboard': return Icons.dashboard;
       case 'package': return Icons.inventory_2;
       case 'tools': return Icons.build;
-      case 'server': return Icons.server;
+      case 'server': return Icons.dns;
       default: return Icons.help_outline;
     }
   }
