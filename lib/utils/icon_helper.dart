@@ -51,6 +51,8 @@ class IconHelper {
         return Icons.medical_services;
       case 'message':
         return Icons.message;
+      case 'security':
+        return Icons.security;
       default:
         return Icons.build;
     }

@@ -448,7 +448,9 @@ class _FullScreenHomePageState extends State<FullScreenHomePage> {
                        tool.name == 'python' ||
                        tool.name == 'docker' ||
                        tool.name == 'terminal' ||
-                       tool.name == 'powertoys';
+                       tool.name == 'powertoys' ||
+                       tool.name == 'wsl' ||
+                       tool.name == 'wsl2';
     
     setState(() {
       final index = _commonTools.indexWhere((t) => t.id == tool.id);
@@ -806,7 +808,9 @@ class _FullScreenHomePageState extends State<FullScreenHomePage> {
                        tool.name == 'python' ||
                        tool.name == 'docker' ||
                        tool.name == 'terminal' ||
-                       tool.name == 'powertoys';
+                       tool.name == 'powertoys' ||
+                       tool.name == 'wsl' ||
+                       tool.name == 'wsl2';
     
     setState(() {
       final index = _commonTools.indexWhere((t) => t.id == tool.id);
