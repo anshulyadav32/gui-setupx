@@ -229,7 +229,25 @@ class CommonToolsView extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 12),
-            // Action buttons
+            // Status check button (always visible)
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton.icon(
+                onPressed: () => onCheck(tool),
+                icon: const Icon(Icons.info, size: 16),
+                label: const Text('Check Status', style: TextStyle(fontSize: 12)),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue,
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 8),
+            
+            // Action buttons based on status
             if (!isInstalled) ...[
               // Install button for not installed
               SizedBox(
@@ -253,45 +271,11 @@ class CommonToolsView extends StatelessWidget {
                 children: [
                   Expanded(
                     child: ElevatedButton.icon(
-                      onPressed: () => onCheck(tool),
-                      icon: const Icon(Icons.check_circle, size: 14),
-                      label: const Text('Check', style: TextStyle(fontSize: 10)),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue,
-                        padding: const EdgeInsets.symmetric(vertical: 6),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 4),
-                  Expanded(
-                    child: ElevatedButton.icon(
                       onPressed: () => onTest(tool),
                       icon: const Icon(Icons.route, size: 14),
-                      label: const Text('Test', style: TextStyle(fontSize: 10)),
+                      label: const Text('Test Env', style: TextStyle(fontSize: 10)),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.purple,
-                        padding: const EdgeInsets.symmetric(vertical: 6),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 4),
-              Row(
-                children: [
-                  Expanded(
-                    child: ElevatedButton.icon(
-                      onPressed: () => onRemove(tool),
-                      icon: const Icon(Icons.delete, size: 14),
-                      label: const Text('Remove', style: TextStyle(fontSize: 10)),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.red,
                         padding: const EdgeInsets.symmetric(vertical: 6),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(4),
@@ -317,20 +301,38 @@ class CommonToolsView extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 4),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton.icon(
-                  onPressed: () => onUpdate(tool),
-                  icon: const Icon(Icons.upgrade, size: 14),
-                  label: const Text('Update', style: TextStyle(fontSize: 10)),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.teal,
-                    padding: const EdgeInsets.symmetric(vertical: 6),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(4),
+              Row(
+                children: [
+                  Expanded(
+                    child: ElevatedButton.icon(
+                      onPressed: () => onUpdate(tool),
+                      icon: const Icon(Icons.upgrade, size: 14),
+                      label: const Text('Update', style: TextStyle(fontSize: 10)),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.teal,
+                        padding: const EdgeInsets.symmetric(vertical: 6),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                      ),
                     ),
                   ),
-                ),
+                  const SizedBox(width: 4),
+                  Expanded(
+                    child: ElevatedButton.icon(
+                      onPressed: () => onRemove(tool),
+                      icon: const Icon(Icons.delete, size: 14),
+                      label: const Text('Remove', style: TextStyle(fontSize: 10)),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red,
+                        padding: const EdgeInsets.symmetric(vertical: 6),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ],
           ],
