@@ -90,6 +90,33 @@ class IconHelper {
     }
   }
 
+  static IconData getWSLToolIcon(String iconName) {
+    switch (iconName.toLowerCase()) {
+      case 'settings':
+        return Icons.settings;
+      case 'upgrade':
+        return Icons.upgrade;
+      case 'computer':
+        return Icons.computer;
+      case 'terminal':
+        return Icons.terminal;
+      case 'update':
+        return Icons.update;
+      case 'security':
+        return Icons.security;
+      case 'desktop_windows':
+        return Icons.desktop_windows;
+      case 'storage':
+        return Icons.storage;
+      case 'network_check':
+        return Icons.network_check;
+      case 'folder':
+        return Icons.folder;
+      default:
+        return Icons.terminal;
+    }
+  }
+
   static IconData getActionLogIcon(String level) {
     switch (level.toLowerCase()) {
       case 'info':

@@ -12,8 +12,6 @@ import 'models/action_log.dart';
 import 'widgets/left_sidebar.dart';
 import 'widgets/right_sidebar.dart';
 import 'widgets/main_content.dart';
-import 'widgets/dev_tools_view.dart';
-import 'widgets/cross_platform_dev_tools_view.dart';
 
 void main() {
   runApp(const FullScreenApp());
@@ -24,15 +22,15 @@ class FullScreenApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'GUI Setup',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
-      home: const FullScreenHomePage(),
-      debugShowCheckedModeBanner: false,
-    );
+        return MaterialApp(
+          title: 'SetupX',
+          theme: ThemeData(
+            primarySwatch: Colors.blue,
+            visualDensity: VisualDensity.adaptivePlatformDensity,
+          ),
+          home: const FullScreenHomePage(),
+          debugShowCheckedModeBanner: false,
+        );
   }
 }
 

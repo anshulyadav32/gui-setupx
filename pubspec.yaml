@@ -1,5 +1,5 @@
-name: fullscreen_flutter_app
-description: A Flutter app that runs in full screen mode on Windows
+name: setupx
+description: SetupX - Comprehensive Development Environment Setup Tool
 publish_to: 'none'
 version: 1.0.0+1
 
@@ -19,3 +19,6 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  
+  assets:
+    - assets/logo.png

@@ -225,10 +225,20 @@ class MainContent extends StatelessWidget {
         return DashboardView(
           packageManagers: packageManagers,
           commonTools: commonTools,
+          devTools: devTools,
+          crossPlatformDevTools: crossPlatformDevTools,
+          wslTools: wslTools,
           onInstallAllPackageManagers: onInstallAllPackageManagers,
           onInstallAllCommonTools: onInstallAllCommonTools,
+          onInstallAllDevTools: onInstallAllDevTools,
+          onInstallAllCrossPlatformDevTools: onInstallAllCrossPlatformDevTools,
+          onInstallAllWSLTools: onInstallAllWSLTools,
           onCheckPackageManager: onCheckPackageManager,
           onCheckCommonTool: onCheckCommonTool,
+          onCheckDevTool: onCheckDevTool,
+          onCheckCrossPlatformDevTool: onCheckCrossPlatformDevTool,
+          onCheckWSLTool: onCheckWSLTool,
+          onNavigateToModule: onNavigateToModule,
         );
     }
   }
