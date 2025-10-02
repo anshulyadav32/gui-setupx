@@ -24,7 +24,7 @@ events:
       The output was:
       0
       MSBuild version 17.14.23+b0019275e for .NET Framework
-      Build started 10/2/2025 8:57:28 AM.
+      Build started 10/2/2025 10:04:25 AM.
       
       Project "C:\\Users\\Administrator\\Desktop\\developer\\installer\\build\\windows\\x64\\CMakeFiles\\3.31.6-msvc6\\CompilerIdCXX\\CompilerIdCXX.vcxproj" on node 1 (default targets).
       PrepareForBuild:
@@ -53,7 +53,7 @@ events:
           0 Warning(s)
           0 Error(s)
       
-      Time Elapsed 00:00:01.15
+      Time Elapsed 00:00:00.89
       
       
       Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "CompilerIdCXX.exe"
@@ -72,8 +72,8 @@ events:
     checks:
       - "Detecting CXX compiler ABI info"
     directories:
-      source: "C:/Users/Administrator/Desktop/developer/installer/build/windows/x64/CMakeFiles/CMakeScratch/TryCompile-0hopgs"
-      binary: "C:/Users/Administrator/Desktop/developer/installer/build/windows/x64/CMakeFiles/CMakeScratch/TryCompile-0hopgs"
+      source: "C:/Users/Administrator/Desktop/developer/installer/build/windows/x64/CMakeFiles/CMakeScratch/TryCompile-e20ub7"
+      binary: "C:/Users/Administrator/Desktop/developer/installer/build/windows/x64/CMakeFiles/CMakeScratch/TryCompile-e20ub7"
     cmakeVariables:
       CMAKE_CXX_FLAGS: "/DWIN32 /D_WINDOWS /W3 /GR /EHsc"
       CMAKE_CXX_FLAGS_DEBUG: "/MDd /Zi /Ob0 /Od /RTC1"
@@ -83,40 +83,40 @@ events:
       variable: "CMAKE_CXX_ABI_COMPILED"
       cached: true
       stdout: |
-        Change Dir: 'C:/Users/Administrator/Desktop/developer/installer/build/windows/x64/CMakeFiles/CMakeScratch/TryCompile-0hopgs'
+        Change Dir: 'C:/Users/Administrator/Desktop/developer/installer/build/windows/x64/CMakeFiles/CMakeScratch/TryCompile-e20ub7'
         
-        Run Build Command(s): "C:/Program Files (x86)/Microsoft Visual Studio/2022/BuildTools/MSBuild/Current/Bin/amd64/MSBuild.exe" cmTC_3c15d.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:n
+        Run Build Command(s): "C:/Program Files (x86)/Microsoft Visual Studio/2022/BuildTools/MSBuild/Current/Bin/amd64/MSBuild.exe" cmTC_1960c.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:n
         MSBuild version 17.14.23+b0019275e for .NET Framework
-        Build started 10/2/2025 8:57:30 AM.
+        Build started 10/2/2025 10:04:26 AM.
         
-        Project "C:\\Users\\Administrator\\Desktop\\developer\\installer\\build\\windows\\x64\\CMakeFiles\\CMakeScratch\\TryCompile-0hopgs\\cmTC_3c15d.vcxproj" on node 1 (default targets).
+        Project "C:\\Users\\Administrator\\Desktop\\developer\\installer\\build\\windows\\x64\\CMakeFiles\\CMakeScratch\\TryCompile-e20ub7\\cmTC_1960c.vcxproj" on node 1 (default targets).
         PrepareForBuild:
-          Creating directory "cmTC_3c15d.dir\\Debug\\".
+          Creating directory "cmTC_1960c.dir\\Debug\\".
           Structured output is enabled. The formatting of compiler diagnostics will reflect the error hierarchy. See https://aka.ms/cpp/structured-output for more details.
-          Creating directory "C:\\Users\\Administrator\\Desktop\\developer\\installer\\build\\windows\\x64\\CMakeFiles\\CMakeScratch\\TryCompile-0hopgs\\Debug\\".
-          Creating directory "cmTC_3c15d.dir\\Debug\\cmTC_3c15d.tlog\\".
+          Creating directory "C:\\Users\\Administrator\\Desktop\\developer\\installer\\build\\windows\\x64\\CMakeFiles\\CMakeScratch\\TryCompile-e20ub7\\Debug\\".
+          Creating directory "cmTC_1960c.dir\\Debug\\cmTC_1960c.tlog\\".
         InitializeBuildStatus:
-          Creating "cmTC_3c15d.dir\\Debug\\cmTC_3c15d.tlog\\unsuccessfulbuild" because "AlwaysCreate" was specified.
-          Touching "cmTC_3c15d.dir\\Debug\\cmTC_3c15d.tlog\\unsuccessfulbuild".
+          Creating "cmTC_1960c.dir\\Debug\\cmTC_1960c.tlog\\unsuccessfulbuild" because "AlwaysCreate" was specified.
+          Touching "cmTC_1960c.dir\\Debug\\cmTC_1960c.tlog\\unsuccessfulbuild".
         ClCompile:
-          C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\CL.exe /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /GR /Fo"cmTC_3c15d.dir\\Debug\\\\" /Fd"cmTC_3c15d.dir\\Debug\\vc143.pdb" /external:W3 /Gd /TP /errorReport:queue "C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\Common7\\IDE\\CommonExtensions\\Microsoft\\CMake\\CMake\\share\\cmake-3.31\\Modules\\CMakeCXXCompilerABI.cpp"
+          C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\CL.exe /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /GR /Fo"cmTC_1960c.dir\\Debug\\\\" /Fd"cmTC_1960c.dir\\Debug\\vc143.pdb" /external:W3 /Gd /TP /errorReport:queue "C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\Common7\\IDE\\CommonExtensions\\Microsoft\\CMake\\CMake\\share\\cmake-3.31\\Modules\\CMakeCXXCompilerABI.cpp"
           Microsoft (R) C/C++ Optimizing Compiler Version 19.44.35217 for x64
           Copyright (C) Microsoft Corporation.  All rights reserved.
-          cl /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /GR /Fo"cmTC_3c15d.dir\\Debug\\\\" /Fd"cmTC_3c15d.dir\\Debug\\vc143.pdb" /external:W3 /Gd /TP /errorReport:queue "C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\Common7\\IDE\\CommonExtensions\\Microsoft\\CMake\\CMake\\share\\cmake-3.31\\Modules\\CMakeCXXCompilerABI.cpp"
+          cl /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /GR /Fo"cmTC_1960c.dir\\Debug\\\\" /Fd"cmTC_1960c.dir\\Debug\\vc143.pdb" /external:W3 /Gd /TP /errorReport:queue "C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\Common7\\IDE\\CommonExtensions\\Microsoft\\CMake\\CMake\\share\\cmake-3.31\\Modules\\CMakeCXXCompilerABI.cpp"
           CMakeCXXCompilerABI.cpp
         Link:
-          C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\link.exe /ERRORREPORT:QUEUE /OUT:"C:\\Users\\Administrator\\Desktop\\developer\\installer\\build\\windows\\x64\\CMakeFiles\\CMakeScratch\\TryCompile-0hopgs\\Debug\\cmTC_3c15d.exe" /INCREMENTAL /ILK:"cmTC_3c15d.dir\\Debug\\cmTC_3c15d.ilk" /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:/Users/Administrator/Desktop/developer/installer/build/windows/x64/CMakeFiles/CMakeScratch/TryCompile-0hopgs/Debug/cmTC_3c15d.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:/Users/Administrator/Desktop/developer/installer/build/windows/x64/CMakeFiles/CMakeScratch/TryCompile-0hopgs/Debug/cmTC_3c15d.lib" /MACHINE:X64  /machine:x64 cmTC_3c15d.dir\\Debug\\CMakeCXXCompilerABI.obj
-          cmTC_3c15d.vcxproj -> C:\\Users\\Administrator\\Desktop\\developer\\installer\\build\\windows\\x64\\CMakeFiles\\CMakeScratch\\TryCompile-0hopgs\\Debug\\cmTC_3c15d.exe
+          C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\link.exe /ERRORREPORT:QUEUE /OUT:"C:\\Users\\Administrator\\Desktop\\developer\\installer\\build\\windows\\x64\\CMakeFiles\\CMakeScratch\\TryCompile-e20ub7\\Debug\\cmTC_1960c.exe" /INCREMENTAL /ILK:"cmTC_1960c.dir\\Debug\\cmTC_1960c.ilk" /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:/Users/Administrator/Desktop/developer/installer/build/windows/x64/CMakeFiles/CMakeScratch/TryCompile-e20ub7/Debug/cmTC_1960c.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:/Users/Administrator/Desktop/developer/installer/build/windows/x64/CMakeFiles/CMakeScratch/TryCompile-e20ub7/Debug/cmTC_1960c.lib" /MACHINE:X64  /machine:x64 cmTC_1960c.dir\\Debug\\CMakeCXXCompilerABI.obj
+          cmTC_1960c.vcxproj -> C:\\Users\\Administrator\\Desktop\\developer\\installer\\build\\windows\\x64\\CMakeFiles\\CMakeScratch\\TryCompile-e20ub7\\Debug\\cmTC_1960c.exe
         FinalizeBuildStatus:
-          Deleting file "cmTC_3c15d.dir\\Debug\\cmTC_3c15d.tlog\\unsuccessfulbuild".
-          Touching "cmTC_3c15d.dir\\Debug\\cmTC_3c15d.tlog\\cmTC_3c15d.lastbuildstate".
-        Done Building Project "C:\\Users\\Administrator\\Desktop\\developer\\installer\\build\\windows\\x64\\CMakeFiles\\CMakeScratch\\TryCompile-0hopgs\\cmTC_3c15d.vcxproj" (default targets).
+          Deleting file "cmTC_1960c.dir\\Debug\\cmTC_1960c.tlog\\unsuccessfulbuild".
+          Touching "cmTC_1960c.dir\\Debug\\cmTC_1960c.tlog\\cmTC_1960c.lastbuildstate".
+        Done Building Project "C:\\Users\\Administrator\\Desktop\\developer\\installer\\build\\windows\\x64\\CMakeFiles\\CMakeScratch\\TryCompile-e20ub7\\cmTC_1960c.vcxproj" (default targets).
         
         Build succeeded.
             0 Warning(s)
             0 Error(s)
         
-        Time Elapsed 00:00:00.74
+        Time Elapsed 00:00:00.87
         
       exitCode: 0
   -
