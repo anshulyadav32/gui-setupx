@@ -1,0 +1,92 @@
+Flutter crash report.
+Please report a bug at https://github.com/flutter/flutter/issues.
+
+## command
+
+flutter build web --release
+
+## exception
+
+FileSystemException: FileSystemException: Failed to decode data using encoding 'utf-8', path = 'C:\Users\Administrator\Desktop\developer\installer\.gitignore'
+
+```
+#0      _File._tryDecode (dart:io/file_impl.dart:708:7)
+#1      _File.readAsStringSync (dart:io/file_impl.dart:719:7)
+#2      _File.readAsLinesSync (dart:io/file_impl.dart:725:36)
+#3      ForwardingFile.readAsLinesSync (package:file/src/forwarding/forwarding_file.dart:107:16)
+#4      ForwardingFile.readAsLinesSync (package:file/src/forwarding/forwarding_file.dart:107:16)
+#5      ProjectMigrator.processFileLines (package:flutter_tools/src/base/project_migrator.dart:40:37)
+#6      ScrubGeneratedPluginRegistrant.migrate (package:flutter_tools/src/web/migrations/scrub_generated_plugin_registrant.dart:28:7)
+#7      ProjectMigration.run (package:flutter_tools/src/base/project_migrator.dart:86:22)
+#8      WebBuilder.buildWeb (package:flutter_tools/src/web/compile.dart:85:21)
+<asynchronous suspension>
+#9      BuildWebCommand.runCommand (package:flutter_tools/src/commands/build_web.dart:281:5)
+<asynchronous suspension>
+#10     FlutterCommand.run.<anonymous closure> (package:flutter_tools/src/runner/flutter_command.dart:1581:27)
+<asynchronous suspension>
+#11     AppContext.run.<anonymous closure> (package:flutter_tools/src/base/context.dart:154:19)
+<asynchronous suspension>
+#12     CommandRunner.runCommand (package:args/command_runner.dart:212:13)
+<asynchronous suspension>
+#13     FlutterCommandRunner.runCommand.<anonymous closure> (package:flutter_tools/src/runner/flutter_command_runner.dart:503:9)
+<asynchronous suspension>
+#14     AppContext.run.<anonymous closure> (package:flutter_tools/src/base/context.dart:154:19)
+<asynchronous suspension>
+#15     FlutterCommandRunner.runCommand (package:flutter_tools/src/runner/flutter_command_runner.dart:438:5)
+<asynchronous suspension>
+#16     run.<anonymous closure>.<anonymous closure> (package:flutter_tools/runner.dart:98:11)
+<asynchronous suspension>
+#17     AppContext.run.<anonymous closure> (package:flutter_tools/src/base/context.dart:154:19)
+<asynchronous suspension>
+#18     main (package:flutter_tools/executable.dart:101:3)
+<asynchronous suspension>
+```
+
+## flutter doctor
+
+```
+[✓] Flutter (Channel stable, 3.35.1, on Microsoft Windows [Version 10.0.20348.4171], locale en-US) [539ms]
+    • Flutter version 3.35.1 on channel stable at C:\tools\flutter
+    • Upstream repository https://github.com/flutter/flutter.git
+    • Framework revision 20f8274939 (7 weeks ago), 2025-08-14 10:53:09 -0700
+    • Engine revision 1e9a811bf8
+    • Dart version 3.9.0
+    • DevTools version 2.48.0
+    • Feature flags: enable-web, enable-linux-desktop, enable-macos-desktop, enable-windows-desktop, enable-android, enable-ios, cli-animations, enable-lldb-debugging
+
+[✓] Windows Version (Server 2022 Datacenter 64-bit, 21H2, 2009) [1,361ms]
+
+[✗] Android toolchain - develop for Android devices [313ms]
+    • Android SDK at C:\Android\android-sdk
+    • Emulator version unknown
+    ✗ cmdline-tools component is missing.
+      Try installing or updating Android Studio.
+      Alternatively, download the tools from https://developer.android.com/studio#command-line-tools-only and make sure to set the ANDROID_HOME environment variable.
+      See https://developer.android.com/studio/command-line for more details.
+
+[✓] Chrome - develop for the web [193ms]
+    • Chrome at C:\Program Files\Google\Chrome\Application\chrome.exe
+
+[✓] Visual Studio - develop Windows apps (Visual Studio Build Tools 2022 17.14.16) [190ms]
+    • Visual Studio at C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools
+    • Visual Studio Build Tools 2022 version 17.14.36518.9
+    • Windows 10 SDK version 10.0.19041.0
+
+[!] Android Studio (not installed) [12ms]
+    • Android Studio not found; download from https://developer.android.com/studio/index.html
+      (or visit https://flutter.dev/to/windows-android-setup for detailed instructions).
+
+[✓] VS Code, 64-bit edition (version 1.104.2) [12ms]
+    • VS Code at C:\Program Files\Microsoft VS Code
+    • Flutter extension version 3.118.0
+
+[✓] Connected device (3 available) [282ms]
+    • Windows (desktop) • windows • windows-x64    • Microsoft Windows [Version 10.0.20348.4171]
+    • Chrome (web)      • chrome  • web-javascript • Google Chrome 141.0.7390.54
+    • Edge (web)        • edge    • web-javascript • Microsoft Edge 140.0.3485.54
+
+[✓] Network resources [569ms]
+    • All expected network resources are available.
+
+! Doctor found issues in 2 categories.
+```
