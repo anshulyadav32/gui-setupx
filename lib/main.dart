@@ -392,6 +392,235 @@ class _FullScreenHomePageState extends State<FullScreenHomePage> {
     );
   }
 
+  Widget _buildContentForSelectedCategory() {
+    switch (_selectedCategory) {
+      case 'package_manager':
+        return _buildPackageManagerView();
+      case 'server_management':
+        return _buildServerManagementView();
+      case 'common_tools':
+        return _buildCommonToolsView();
+      case 'dashboard':
+      default:
+        return _buildDashboardView();
+    }
+  }
+
+  Widget _buildDashboardView() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Icon(
+            Icons.dashboard,
+            size: 100,
+            color: Colors.white,
+          ),
+          const SizedBox(height: 30),
+          const Text(
+            'Welcome to Dashboard',
+            style: TextStyle(
+              fontSize: 32,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 20),
+          const Text(
+            'Full Screen Flutter App with Sidebars',
+            style: TextStyle(
+              fontSize: 18,
+              color: Colors.white70,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 50),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+            decoration: BoxDecoration(
+              color: Colors.green.withOpacity(0.2),
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: Colors.green, width: 1),
+            ),
+            child: const Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.fullscreen, color: Colors.green, size: 20),
+                SizedBox(width: 10),
+                Text(
+                  'Always Full Screen Mode',
+                  style: TextStyle(
+                    color: Colors.green,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPackageManagerView() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Icon(
+            Icons.inventory,
+            size: 80,
+            color: Colors.white,
+          ),
+          const SizedBox(height: 30),
+          const Text(
+            'Package Manager Status',
+            style: TextStyle(
+              fontSize: 28,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 40),
+          Expanded(
+            child: Container(
+              margin: const EdgeInsets.symmetric(horizontal: 40),
+              child: GridView.count(
+                crossAxisCount: 2,
+                crossAxisSpacing: 20,
+                mainAxisSpacing: 20,
+                childAspectRatio: 2.5,
+                children: [
+                  _buildPackageManagerCard('Scoop', Icons.package_2, Colors.blue),
+                  _buildPackageManagerCard('Chocolatey', Icons.cake, Colors.orange),
+                  _buildPackageManagerCard('Winget', Icons.flight, Colors.purple),
+                  _buildPackageManagerCard('NPM', Icons.code, Colors.red),
+                  _buildPackageManagerCard('Pip', Icons.python, Colors.green),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPackageManagerCard(String name, IconData icon, Color color) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: color.withOpacity(0.3), width: 1),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            icon,
+            size: 40,
+            color: color,
+          ),
+          const SizedBox(height: 8),
+          Text(
+            name,
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: color,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+            decoration: BoxDecoration(
+              color: Colors.green.withOpacity(0.2),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: const Text(
+              'Available',
+              style: TextStyle(
+                fontSize: 12,
+                color: Colors.green,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildServerManagementView() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Icon(
+            Icons.dns,
+            size: 100,
+            color: Colors.white,
+          ),
+          const SizedBox(height: 30),
+          const Text(
+            'Server Management',
+            style: TextStyle(
+              fontSize: 32,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 20),
+          const Text(
+            'Server management tools and services',
+            style: TextStyle(
+              fontSize: 18,
+              color: Colors.white70,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCommonToolsView() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Icon(
+            Icons.build,
+            size: 100,
+            color: Colors.white,
+          ),
+          const SizedBox(height: 30),
+          const Text(
+            'Common Tools',
+            style: TextStyle(
+              fontSize: 32,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 20),
+          const Text(
+            'Common development and system tools',
+            style: TextStyle(
+              fontSize: 18,
+              color: Colors.white70,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildRightSidebar() {
     return Container(
       width: 300,
@@ -540,70 +769,7 @@ class _FullScreenHomePageState extends State<FullScreenHomePage> {
           
           // Main Content
           Expanded(
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(
-                    Icons.fullscreen,
-                    size: 100,
-                    color: Colors.white,
-                  ),
-                  const SizedBox(height: 30),
-                  Text(
-                    'Welcome to ${_navbarItems.isNotEmpty ? _navbarItems[_selectedIndex]['name'] : 'Dashboard'}',
-                    style: const TextStyle(
-                      fontSize: 32,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 20),
-                  const Text(
-                    'This app runs in full screen mode on Windows',
-                    style: TextStyle(
-                      fontSize: 18,
-                      color: Colors.white70,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 50),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
-                    decoration: BoxDecoration(
-                      color: Colors.green.withOpacity(0.2),
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: Colors.green, width: 1),
-                    ),
-                    child: const Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(Icons.fullscreen, color: Colors.green, size: 20),
-                        SizedBox(width: 10),
-                        Text(
-                          'Always Full Screen Mode',
-                          style: TextStyle(
-                            color: Colors.green,
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 30),
-                  const Text(
-                    'This app runs in permanent full screen mode',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.white54,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
-              ),
-            ),
+            child: _buildContentForSelectedCategory(),
           ),
         ],
       ),
