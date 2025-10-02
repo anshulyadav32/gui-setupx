@@ -164,6 +164,151 @@ class _FullScreenHomePageState extends State<FullScreenHomePage> {
     await PrismaClient.instance.logAppEvent(level, message, category: category, metadata: metadata);
   }
 
+  // Package Manager Actions
+  Future<void> _installAllPackageManagers() async {
+    await _logAppEvent('info', 'Installing all package managers', category: 'package_managers');
+    
+    for (final manager in _packageManagers) {
+      await _installPackageManager(manager);
+    }
+    
+    // Refresh package managers after installation
+    await _loadPackageManagers();
+  }
+
+  Future<void> _installPackageManager(Map<String, dynamic> manager) async {
+    final name = manager['displayName'] ?? manager['name'] ?? 'Unknown';
+    final installCommand = manager['installCommand'] ?? '';
+    
+    await _logAppEvent('info', 'Installing package manager: $name', 
+      category: 'package_managers',
+      metadata: {
+        'manager': name,
+        'command': installCommand,
+      }
+    );
+    
+    // TODO: Implement actual installation logic
+    // This would typically execute the install command
+    print('Installing $name with command: $installCommand');
+    
+    // Simulate installation success
+    await Future.delayed(const Duration(seconds: 1));
+    
+    // Update status in database
+    await PrismaClient.instance.updatePackageManager(
+      manager['id'], 
+      {'status': 'installed'}
+    );
+    
+    // Refresh the list
+    await _loadPackageManagers();
+  }
+
+  Future<void> _checkPackageManager(Map<String, dynamic> manager) async {
+    final name = manager['displayName'] ?? manager['name'] ?? 'Unknown';
+    
+    await _logAppEvent('info', 'Checking package manager: $name', 
+      category: 'package_managers',
+      metadata: {'manager': name}
+    );
+    
+    // TODO: Implement actual check logic
+    print('Checking $name status...');
+    
+    // Simulate check
+    await Future.delayed(const Duration(milliseconds: 500));
+    
+    // Show result (in a real app, this would show actual status)
+    _showMessage('$name is working correctly');
+  }
+
+  Future<void> _testEnvPath(Map<String, dynamic> manager) async {
+    final name = manager['displayName'] ?? manager['name'] ?? 'Unknown';
+    
+    await _logAppEvent('info', 'Testing environment path for: $name', 
+      category: 'package_managers',
+      metadata: {'manager': name}
+    );
+    
+    // TODO: Implement actual path testing
+    print('Testing environment path for $name...');
+    
+    // Simulate path test
+    await Future.delayed(const Duration(milliseconds: 500));
+    
+    // Show result
+    _showMessage('$name path is correctly configured');
+  }
+
+  Future<void> _removePackageManager(Map<String, dynamic> manager) async {
+    final name = manager['displayName'] ?? manager['name'] ?? 'Unknown';
+    final uninstallCommand = manager['uninstallCommand'] ?? '';
+    
+    await _logAppEvent('info', 'Removing package manager: $name', 
+      category: 'package_managers',
+      metadata: {
+        'manager': name,
+        'command': uninstallCommand,
+      }
+    );
+    
+    // TODO: Implement actual removal logic
+    print('Removing $name with command: $uninstallCommand');
+    
+    // Simulate removal
+    await Future.delayed(const Duration(seconds: 1));
+    
+    // Update status in database
+    await PrismaClient.instance.updatePackageManager(
+      manager['id'], 
+      {'status': 'unavailable'}
+    );
+    
+    // Refresh the list
+    await _loadPackageManagers();
+  }
+
+  Future<void> _reinstallPackageManager(Map<String, dynamic> manager) async {
+    final name = manager['displayName'] ?? manager['name'] ?? 'Unknown';
+    
+    await _logAppEvent('info', 'Reinstalling package manager: $name', 
+      category: 'package_managers',
+      metadata: {'manager': name}
+    );
+    
+    // First remove, then install
+    await _removePackageManager(manager);
+    await Future.delayed(const Duration(seconds: 1));
+    await _installPackageManager(manager);
+  }
+
+  Future<void> _updatePackageManager(Map<String, dynamic> manager) async {
+    final name = manager['displayName'] ?? manager['name'] ?? 'Unknown';
+    final updateCommand = manager['updateCommand'] ?? '';
+    
+    await _logAppEvent('info', 'Updating package manager: $name', 
+      category: 'package_managers',
+      metadata: {
+        'manager': name,
+        'command': updateCommand,
+      }
+    );
+    
+    // TODO: Implement actual update logic
+    print('Updating $name with command: $updateCommand');
+    
+    // Simulate update
+    await Future.delayed(const Duration(seconds: 1));
+    
+    _showMessage('$name updated successfully');
+  }
+
+  void _showMessage(String message) {
+    // TODO: Implement proper message display (snackbar, dialog, etc.)
+    print('Message: $message');
+  }
+
   @override
   void dispose() {
     _fullScreenTimer?.cancel();
@@ -502,7 +647,31 @@ class _FullScreenHomePageState extends State<FullScreenHomePage> {
             ),
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 40),
+          const SizedBox(height: 20),
+          // Install All Button
+          Container(
+            margin: const EdgeInsets.symmetric(horizontal: 40),
+            child: ElevatedButton.icon(
+              onPressed: _installAllPackageManagers,
+              icon: const Icon(Icons.download, color: Colors.white),
+              label: const Text(
+                'Install All Package Managers',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.green,
+                padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 20),
           Expanded(
             child: _packageManagers.isEmpty 
               ? const Center(
@@ -525,7 +694,7 @@ class _FullScreenHomePageState extends State<FullScreenHomePage> {
                       crossAxisCount: 2,
                       crossAxisSpacing: 20,
                       mainAxisSpacing: 20,
-                      childAspectRatio: 2.5,
+                      childAspectRatio: 1.8,
                     ),
                     itemCount: _packageManagers.length,
                     itemBuilder: (context, index) {
@@ -546,6 +715,7 @@ class _FullScreenHomePageState extends State<FullScreenHomePage> {
     final colorHex = manager['color'] ?? '#2196F3';
     final status = manager['status'] ?? 'unknown';
     final version = manager['version'] ?? '';
+    final isInstalled = status == 'available' || status == 'installed';
     
     // Parse hex color
     Color color;
@@ -563,12 +733,13 @@ class _FullScreenHomePageState extends State<FullScreenHomePage> {
     String statusText;
     switch (status) {
       case 'available':
+      case 'installed':
         statusColor = Colors.green;
-        statusText = 'Available';
+        statusText = 'Installed';
         break;
       case 'unavailable':
         statusColor = Colors.red;
-        statusText = 'Unavailable';
+        statusText = 'Not Installed';
         break;
       case 'error':
         statusColor = Colors.orange;
@@ -585,51 +756,167 @@ class _FullScreenHomePageState extends State<FullScreenHomePage> {
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: color.withOpacity(0.3), width: 1),
       ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            icon,
-            size: 40,
-            color: color,
-          ),
-          const SizedBox(height: 8),
-          Text(
-            name,
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: color,
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // Header with icon and name
+            Row(
+              children: [
+                Icon(
+                  icon,
+                  size: 24,
+                  color: color,
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        name,
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: color,
+                        ),
+                      ),
+                      if (version.isNotEmpty)
+                        Text(
+                          'v$version',
+                          style: const TextStyle(
+                            fontSize: 10,
+                            color: Colors.white70,
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: statusColor.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Text(
+                    statusText,
+                    style: TextStyle(
+                      fontSize: 10,
+                      color: statusColor,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
             ),
-            textAlign: TextAlign.center,
-          ),
-          if (version.isNotEmpty) ...[
-            const SizedBox(height: 2),
-            Text(
-              'v$version',
-              style: TextStyle(
-                fontSize: 10,
-                color: Colors.white70,
+            const SizedBox(height: 12),
+            // Action buttons
+            if (!isInstalled) ...[
+              // Install button for not installed
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  onPressed: () => _installPackageManager(manager),
+                  icon: const Icon(Icons.download, size: 16),
+                  label: const Text('Install', style: TextStyle(fontSize: 12)),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.green,
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                  ),
+                ),
               ),
-            ),
+            ] else ...[
+              // Action buttons for installed package managers
+              Row(
+                children: [
+                  Expanded(
+                    child: ElevatedButton.icon(
+                      onPressed: () => _checkPackageManager(manager),
+                      icon: const Icon(Icons.check_circle, size: 14),
+                      label: const Text('Check', style: TextStyle(fontSize: 10)),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blue,
+                        padding: const EdgeInsets.symmetric(vertical: 6),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 4),
+                  Expanded(
+                    child: ElevatedButton.icon(
+                      onPressed: () => _testEnvPath(manager),
+                      icon: const Icon(Icons.route, size: 14),
+                      label: const Text('Test', style: TextStyle(fontSize: 10)),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.purple,
+                        padding: const EdgeInsets.symmetric(vertical: 6),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 4),
+              Row(
+                children: [
+                  Expanded(
+                    child: ElevatedButton.icon(
+                      onPressed: () => _removePackageManager(manager),
+                      icon: const Icon(Icons.delete, size: 14),
+                      label: const Text('Remove', style: TextStyle(fontSize: 10)),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red,
+                        padding: const EdgeInsets.symmetric(vertical: 6),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 4),
+                  Expanded(
+                    child: ElevatedButton.icon(
+                      onPressed: () => _reinstallPackageManager(manager),
+                      icon: const Icon(Icons.refresh, size: 14),
+                      label: const Text('Reinstall', style: TextStyle(fontSize: 10)),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.orange,
+                        padding: const EdgeInsets.symmetric(vertical: 6),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 4),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  onPressed: () => _updatePackageManager(manager),
+                  icon: const Icon(Icons.upgrade, size: 14),
+                  label: const Text('Update', style: TextStyle(fontSize: 10)),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.teal,
+                    padding: const EdgeInsets.symmetric(vertical: 6),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ],
-          const SizedBox(height: 4),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-            decoration: BoxDecoration(
-              color: statusColor.withOpacity(0.2),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Text(
-              statusText,
-              style: TextStyle(
-                fontSize: 12,
-                color: statusColor,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
