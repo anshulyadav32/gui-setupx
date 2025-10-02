@@ -39,6 +39,7 @@ class _FullScreenHomePageState extends State<FullScreenHomePage> {
 
   List<Map<String, dynamic>> _navbarItems = [];
   List<Map<String, dynamic>> _packageManagers = [];
+  List<Map<String, dynamic>> _commonTools = [];
   String _selectedCategory = 'dashboard';
   List<Map<String, dynamic>> _actionLogs = [];
 
@@ -65,6 +66,7 @@ class _FullScreenHomePageState extends State<FullScreenHomePage> {
       await _loadUserSettings();
       await _loadNavbarItems();
       await _loadPackageManagers();
+      await _loadCommonTools();
       await _logAppEvent('info', 'App initialized successfully', category: 'startup');
     } catch (e) {
       await _logAppEvent('error', 'Failed to initialize database: $e', category: 'startup');
@@ -122,19 +124,10 @@ class _FullScreenHomePageState extends State<FullScreenHomePage> {
           },
           {
             'id': '3',
-            'name': 'Server Management',
-            'icon': 'server',
-            'route': '/server-management',
-            'order': 3,
-            'isActive': true,
-            'category': 'server_management',
-          },
-          {
-            'id': '4',
             'name': 'Common Tools',
             'icon': 'tools',
             'route': '/common-tools',
-            'order': 4,
+            'order': 3,
             'isActive': true,
             'category': 'common_tools',
           },
@@ -157,6 +150,121 @@ class _FullScreenHomePageState extends State<FullScreenHomePage> {
       // Fallback to empty list if database fails
       setState(() {
         _packageManagers = [];
+      });
+    }
+  }
+
+  Future<void> _loadCommonTools() async {
+    try {
+      // For now, use hardcoded data. Later this can be moved to database
+      setState(() {
+        _commonTools = [
+          {
+            'id': '1',
+            'name': 'Git',
+            'icon': 'code',
+            'color': '#F05032',
+            'status': 'available',
+            'description': 'Version control system',
+            'installCommand': 'winget install Git.Git',
+          },
+          {
+            'id': '2',
+            'name': 'GitHub CLI',
+            'icon': 'code',
+            'color': '#24292e',
+            'status': 'available',
+            'description': 'GitHub command line tool',
+            'installCommand': 'winget install GitHub.cli',
+          },
+          {
+            'id': '3',
+            'name': 'Chrome',
+            'icon': 'web',
+            'color': '#4285F4',
+            'status': 'available',
+            'description': 'Google Chrome browser',
+            'installCommand': 'winget install Google.Chrome',
+          },
+          {
+            'id': '4',
+            'name': 'Brave',
+            'icon': 'web',
+            'color': '#FB542B',
+            'status': 'available',
+            'description': 'Brave browser',
+            'installCommand': 'winget install BraveSoftware.BraveBrowser',
+          },
+          {
+            'id': '5',
+            'name': 'Firefox',
+            'icon': 'web',
+            'color': '#FF7139',
+            'status': 'available',
+            'description': 'Mozilla Firefox browser',
+            'installCommand': 'winget install Mozilla.Firefox',
+          },
+          {
+            'id': '6',
+            'name': 'VSCode',
+            'icon': 'code',
+            'color': '#007ACC',
+            'status': 'available',
+            'description': 'Visual Studio Code',
+            'installCommand': 'winget install Microsoft.VisualStudioCode',
+          },
+          {
+            'id': '7',
+            'name': 'Cursor',
+            'icon': 'code',
+            'color': '#000000',
+            'status': 'available',
+            'description': 'Cursor AI code editor',
+            'installCommand': 'winget install Cursor.Cursor',
+          },
+          {
+            'id': '8',
+            'name': 'NVM',
+            'icon': 'terminal',
+            'color': '#339933',
+            'status': 'available',
+            'description': 'Node Version Manager',
+            'installCommand': 'winget install CoreyButler.NVMforWindows',
+          },
+          {
+            'id': '9',
+            'name': 'Node.js',
+            'icon': 'terminal',
+            'color': '#339933',
+            'status': 'available',
+            'description': 'Node.js runtime',
+            'installCommand': 'winget install OpenJS.NodeJS',
+          },
+          {
+            'id': '10',
+            'name': 'JDK',
+            'icon': 'code',
+            'color': '#ED8B00',
+            'status': 'available',
+            'description': 'Java Development Kit',
+            'installCommand': 'winget install Oracle.JDK.17',
+          },
+          {
+            'id': '11',
+            'name': 'C++',
+            'icon': 'code',
+            'color': '#00599C',
+            'status': 'available',
+            'description': 'C++ Build Tools',
+            'installCommand': 'winget install Microsoft.VisualStudio.2022.BuildTools',
+          },
+        ];
+      });
+      await _logAppEvent('info', 'Common tools loaded successfully: ${_commonTools.length} tools', category: 'common_tools');
+    } catch (e) {
+      await _logAppEvent('error', 'Failed to load common tools: $e', category: 'common_tools');
+      setState(() {
+        _commonTools = [];
       });
     }
   }
@@ -321,6 +429,41 @@ class _FullScreenHomePageState extends State<FullScreenHomePage> {
     await Future.delayed(const Duration(seconds: 1));
     
     _addActionLog('$name updated successfully', 'success');
+  }
+
+  // Common Tools Actions
+  Future<void> _installAllCommonTools() async {
+    await _logAppEvent('info', 'Installing all common tools', category: 'common_tools');
+    _addActionLog('Installing all common tools...', 'info');
+    
+    for (final tool in _commonTools) {
+      await _installCommonTool(tool);
+    }
+    
+    _addActionLog('All common tools installation completed', 'success');
+  }
+
+  Future<void> _installCommonTool(Map<String, dynamic> tool) async {
+    final name = tool['name'] ?? 'Unknown';
+    final installCommand = tool['installCommand'] ?? '';
+    
+    await _logAppEvent('info', 'Installing common tool: $name', 
+      category: 'common_tools',
+      metadata: {
+        'tool': name,
+        'command': installCommand,
+      }
+    );
+    
+    _addActionLog('Installing $name...', 'info');
+    
+    // TODO: Implement actual installation logic
+    print('Installing $name with command: $installCommand');
+    
+    // Simulate installation success
+    await Future.delayed(const Duration(seconds: 1));
+    
+    _addActionLog('$name installed successfully', 'success');
   }
 
   void _addActionLog(String message, String level) {
@@ -593,8 +736,6 @@ class _FullScreenHomePageState extends State<FullScreenHomePage> {
     switch (_selectedCategory) {
       case 'package_manager':
         return _buildPackageManagerView();
-      case 'server_management':
-        return _buildServerManagementView();
       case 'common_tools':
         return _buildCommonToolsView();
       case 'dashboard':
@@ -1009,27 +1150,61 @@ class _FullScreenHomePageState extends State<FullScreenHomePage> {
         children: [
           const Icon(
             Icons.build,
-            size: 100,
+            size: 80,
             color: Colors.white,
           ),
           const SizedBox(height: 30),
           const Text(
-            'Common Tools',
+            'Common Development Tools',
             style: TextStyle(
-              fontSize: 32,
+              fontSize: 28,
               fontWeight: FontWeight.bold,
               color: Colors.white,
             ),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 20),
-          const Text(
-            'Common development and system tools',
-            style: TextStyle(
-              fontSize: 18,
-              color: Colors.white70,
+          // Install All Button
+          Container(
+            margin: const EdgeInsets.symmetric(horizontal: 40),
+            child: ElevatedButton.icon(
+              onPressed: _installAllCommonTools,
+              icon: const Icon(Icons.download, color: Colors.white),
+              label: const Text(
+                'Install All Common Tools',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.green,
+                padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
             ),
-            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 20),
+          Expanded(
+            child: Container(
+              margin: const EdgeInsets.symmetric(horizontal: 40),
+              child: GridView.builder(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 20,
+                  mainAxisSpacing: 20,
+                  childAspectRatio: 1.8,
+                ),
+                itemCount: _commonTools.length,
+                itemBuilder: (context, index) {
+                  final tool = _commonTools[index];
+                  return _buildCommonToolCard(tool);
+                },
+              ),
+            ),
           ),
         ],
       ),
@@ -1212,6 +1387,102 @@ class _FullScreenHomePageState extends State<FullScreenHomePage> {
         ],
       ),
     );
+  }
+
+  Widget _buildCommonToolCard(Map<String, dynamic> tool) {
+    final name = tool['name'] ?? 'Unknown';
+    final iconName = tool['icon'] ?? 'code';
+    final colorHex = tool['color'] ?? '#007ACC';
+    final status = tool['status'] ?? 'available';
+    final description = tool['description'] ?? '';
+    
+    // Parse hex color
+    Color color;
+    try {
+      color = Color(int.parse(colorHex.replaceFirst('#', '0xFF')));
+    } catch (e) {
+      color = Colors.blue;
+    }
+    
+    // Get icon
+    IconData icon = _getCommonToolIcon(iconName);
+    
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: color.withOpacity(0.3), width: 1),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // Header with icon and name
+            Row(
+              children: [
+                Icon(
+                  icon,
+                  size: 24,
+                  color: color,
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        name,
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: color,
+                        ),
+                      ),
+                      if (description.isNotEmpty)
+                        Text(
+                          description,
+                          style: const TextStyle(
+                            fontSize: 10,
+                            color: Colors.white70,
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            // Install button
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton.icon(
+                onPressed: () => _installCommonTool(tool),
+                icon: const Icon(Icons.download, size: 16),
+                label: const Text('Install', style: TextStyle(fontSize: 12)),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.green,
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  IconData _getCommonToolIcon(String iconName) {
+    switch (iconName) {
+      case 'code': return Icons.code;
+      case 'web': return Icons.web;
+      case 'terminal': return Icons.terminal;
+      case 'build': return Icons.build;
+      default: return Icons.code;
+    }
   }
 
   Widget _buildActionLogItem(Map<String, dynamic> log) {
