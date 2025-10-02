@@ -8,6 +8,7 @@ import 'models/package_manager.dart';
 import 'models/common_tool.dart';
 import 'models/dev_tool.dart';
 import 'models/cross_platform_dev_tool.dart';
+import 'models/wsl_tool.dart';
 import 'models/action_log.dart';
 import 'widgets/left_sidebar.dart';
 import 'widgets/right_sidebar.dart';
@@ -54,6 +55,7 @@ class _FullScreenHomePageState extends State<FullScreenHomePage> {
   List<CommonTool> _commonTools = [];
   List<DevTool> _devTools = [];
   List<CrossPlatformDevTool> _crossPlatformDevTools = [];
+  List<WSLTool> _wslTools = [];
   List<ActionLog> _actionLogs = [];
 
   // Loading States
@@ -62,6 +64,7 @@ class _FullScreenHomePageState extends State<FullScreenHomePage> {
   bool _isLoadingCommonTools = false;
   bool _isLoadingDevTools = false;
   bool _isLoadingCrossPlatformDevTools = false;
+  bool _isLoadingWSLTools = false;
 
   // Timer for maintaining full screen
   Timer? _fullScreenTimer;
@@ -116,6 +119,7 @@ class _FullScreenHomePageState extends State<FullScreenHomePage> {
       await _loadCommonTools();
       await _loadDevTools();
       await _loadCrossPlatformDevTools();
+      await _loadWSLTools();
       
       // Automatically verify status of all components on startup
       await _verifyAllComponentStatus();
@@ -226,6 +230,21 @@ class _FullScreenHomePageState extends State<FullScreenHomePage> {
       await _logAppEvent('error', 'Failed to load cross-platform dev tools: $e', category: 'cross_platform_dev_tools');
     } finally {
       setState(() => _isLoadingCrossPlatformDevTools = false);
+    }
+  }
+
+  Future<void> _loadWSLTools() async {
+    setState(() => _isLoadingWSLTools = true);
+    try {
+      final tools = await PrismaClient.instance.getWSLTools();
+      setState(() {
+        _wslTools = tools.map((tool) => WSLTool.fromMap(tool)).toList();
+      });
+      await _logAppEvent('info', 'WSL tools loaded successfully: ${_wslTools.length} tools', category: 'wsl_tools');
+    } catch (e) {
+      await _logAppEvent('error', 'Failed to load WSL tools: $e', category: 'wsl_tools');
+    } finally {
+      setState(() => _isLoadingWSLTools = false);
     }
   }
 
@@ -744,6 +763,127 @@ class _FullScreenHomePageState extends State<FullScreenHomePage> {
     print('Message: ${tool.displayName} updated successfully');
   }
 
+  // WSL Tools methods
+  Future<void> _installAllWSLTools() async {
+    await _logAppEvent('info', 'Installing all WSL tools', category: 'wsl_tools');
+    for (final tool in _wslTools) {
+      await _installWSLTool(tool);
+    }
+  }
+
+  Future<void> _installWSLTool(WSLTool tool) async {
+    await _logAppEvent('info', 'Installing WSL tool: ${tool.displayName}', 
+        category: 'wsl_tools', 
+        metadata: {'tool': tool.displayName});
+    
+    // Simulate installation
+    await Future.delayed(const Duration(seconds: 1));
+    
+    setState(() {
+      final index = _wslTools.indexWhere((t) => t.id == tool.id);
+      if (index != -1) {
+        _wslTools[index] = _wslTools[index].copyWith(
+          status: 'installed',
+          version: '1.0.0',
+        );
+      }
+    });
+    
+    await _logAppEvent('success', 'WSL tool installed: ${tool.displayName}', category: 'wsl_tools');
+  }
+
+  Future<void> _checkWSLTool(WSLTool tool) async {
+    await _logAppEvent('info', 'Checking WSL tool: ${tool.displayName}', 
+        category: 'wsl_tools', 
+        metadata: {'tool': tool.displayName});
+    
+    // Simulate status check
+    await Future.delayed(const Duration(milliseconds: 500));
+    print('Checking ${tool.displayName} status...');
+    
+    // Update status based on some logic (simulate real checking)
+    final isInstalled = tool.name == 'wsl' || 
+                       tool.name == 'wsl2' || 
+                       tool.name == 'ubuntu' || 
+                       tool.name == 'kali';
+    
+    setState(() {
+      final index = _wslTools.indexWhere((t) => t.id == tool.id);
+      if (index != -1) {
+        _wslTools[index] = _wslTools[index].copyWith(
+          status: isInstalled ? 'installed' : 'not_installed',
+          version: isInstalled ? '2.0.0' : null,
+        );
+      }
+    });
+    
+    await _logAppEvent('success', 'WSL tool status checked: ${tool.displayName}', category: 'wsl_tools');
+  }
+
+  Future<void> _testWSLTool(WSLTool tool) async {
+    await _logAppEvent('info', 'Testing WSL tool: ${tool.displayName}', 
+        category: 'wsl_tools', 
+        metadata: {'tool': tool.displayName});
+    
+    // Simulate testing
+    await Future.delayed(const Duration(seconds: 1));
+    print('Testing ${tool.displayName}...');
+    print('Message: ${tool.displayName} test completed successfully');
+  }
+
+  Future<void> _removeWSLTool(WSLTool tool) async {
+    await _logAppEvent('info', 'Removing WSL tool: ${tool.displayName}', 
+        category: 'wsl_tools', 
+        metadata: {'tool': tool.displayName});
+    
+    // Simulate removal
+    await Future.delayed(const Duration(seconds: 1));
+    
+    setState(() {
+      final index = _wslTools.indexWhere((t) => t.id == tool.id);
+      if (index != -1) {
+        _wslTools[index] = _wslTools[index].copyWith(
+          status: 'not_installed',
+          version: null,
+        );
+      }
+    });
+    
+    await _logAppEvent('success', 'WSL tool removed: ${tool.displayName}', category: 'wsl_tools');
+  }
+
+  Future<void> _reinstallWSLTool(WSLTool tool) async {
+    await _logAppEvent('info', 'Reinstalling WSL tool: ${tool.displayName}', 
+        category: 'wsl_tools', 
+        metadata: {'tool': tool.displayName});
+    
+    // Simulate reinstallation
+    await Future.delayed(const Duration(seconds: 1));
+    print('Reinstalling ${tool.displayName}...');
+    print('Message: ${tool.displayName} reinstalled successfully');
+    
+    setState(() {
+      final index = _wslTools.indexWhere((t) => t.id == tool.id);
+      if (index != -1) {
+        _wslTools[index] = _wslTools[index].copyWith(
+          status: 'installed',
+          version: '1.0.0',
+        );
+      }
+    });
+  }
+
+  Future<void> _updateWSLTool(WSLTool tool) async {
+    await _logAppEvent('info', 'Updating WSL tool: ${tool.displayName}', 
+        category: 'wsl_tools', 
+        metadata: {'tool': tool.displayName});
+    
+    // Simulate update
+    await Future.delayed(const Duration(seconds: 1));
+    print('Updating ${tool.displayName}...');
+    print('Message: ${tool.displayName} updated successfully');
+  }
+
   Future<void> _verifyAllComponentStatus() async {
     await _logAppEvent('info', 'Verifying status of all components...', category: 'startup');
     
@@ -765,6 +905,11 @@ class _FullScreenHomePageState extends State<FullScreenHomePage> {
     // Verify cross-platform dev tools status
     for (final tool in _crossPlatformDevTools) {
       await _verifyCrossPlatformDevToolStatus(tool);
+    }
+    
+    // Verify WSL tools status
+    for (final tool in _wslTools) {
+      await _verifyWSLToolStatus(tool);
     }
     
     await _logAppEvent('success', 'All component statuses verified', category: 'startup');
@@ -865,6 +1010,27 @@ class _FullScreenHomePageState extends State<FullScreenHomePage> {
     });
   }
 
+  Future<void> _verifyWSLToolStatus(WSLTool tool) async {
+    // Simulate status check without UI feedback
+    await Future.delayed(const Duration(milliseconds: 100));
+    
+    // Update status based on realistic detection
+    final isInstalled = tool.name == 'wsl' || 
+                       tool.name == 'wsl2' || 
+                       tool.name == 'ubuntu' || 
+                       tool.name == 'kali';
+    
+    setState(() {
+      final index = _wslTools.indexWhere((t) => t.id == tool.id);
+      if (index != -1) {
+        _wslTools[index] = _wslTools[index].copyWith(
+          status: isInstalled ? 'installed' : 'unknown',
+          version: isInstalled ? '2.0.0' : null,
+        );
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -891,10 +1057,12 @@ class _FullScreenHomePageState extends State<FullScreenHomePage> {
               commonTools: _commonTools,
               devTools: _devTools,
               crossPlatformDevTools: _crossPlatformDevTools,
+              wslTools: _wslTools,
               isLoadingPackageManagers: _isLoadingPackageManagers,
               isLoadingCommonTools: _isLoadingCommonTools,
               isLoadingDevTools: _isLoadingDevTools,
               isLoadingCrossPlatformDevTools: _isLoadingCrossPlatformDevTools,
+              isLoadingWSLTools: _isLoadingWSLTools,
               onInstallAllPackageManagers: _installAllPackageManagers,
               onInstallPackageManager: _installPackageManager,
               onCheckPackageManager: _checkPackageManager,
@@ -923,6 +1091,14 @@ class _FullScreenHomePageState extends State<FullScreenHomePage> {
               onRemoveCrossPlatformDevTool: _removeCrossPlatformDevTool,
               onReinstallCrossPlatformDevTool: _reinstallCrossPlatformDevTool,
               onUpdateCrossPlatformDevTool: _updateCrossPlatformDevTool,
+              onInstallAllWSLTools: _installAllWSLTools,
+              onInstallWSLTool: _installWSLTool,
+              onCheckWSLTool: _checkWSLTool,
+              onTestWSLTool: _testWSLTool,
+              onRemoveWSLTool: _removeWSLTool,
+              onReinstallWSLTool: _reinstallWSLTool,
+              onUpdateWSLTool: _updateWSLTool,
+              onNavigateToModule: (category) => _onNavbarItemSelected(category, 0),
             ),
           ),
           

@@ -164,7 +164,7 @@
       "languageVersion": "3.5"
     },
     {
-      "name": "fullscreen_flutter_app",
+      "name": "setupx",
       "rootUri": "../",
       "packageUri": "lib/",
       "languageVersion": "3.0"

@@ -1,10 +1,10 @@
 {
   "roots": [
-    "fullscreen_flutter_app"
+    "setupx"
   ],
   "packages": [
     {
-      "name": "fullscreen_flutter_app",
+      "name": "setupx",
       "version": "1.0.0+1",
       "dependencies": [
         "cupertino_icons",

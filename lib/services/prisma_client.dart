@@ -84,6 +84,15 @@ class PrismaClient {
         'isActive': true,
         'category': 'cross_platform_dev',
       },
+      {
+        'id': '6',
+        'name': 'WSL Tools',
+        'icon': 'terminal',
+        'route': '/wsl-tools',
+        'order': 6,
+        'isActive': true,
+        'category': 'wsl',
+      },
     ];
   }
 
@@ -822,5 +831,151 @@ class PrismaClient {
     // Mock implementation
     await Future.delayed(const Duration(milliseconds: 50));
     print('Updating cross-platform dev tool $toolId: $updates');
+  }
+
+  // WSL Tools operations
+  Future<List<Map<String, dynamic>>> getWSLTools() async {
+    // Mock implementation - in real app, this would query the database
+    await Future.delayed(const Duration(milliseconds: 100));
+    return [
+      {
+        'id': '1',
+        'name': 'wsl',
+        'displayName': 'WSL',
+        'icon': 'settings',
+        'color': '#0078D4',
+        'status': 'unknown',
+        'version': null,
+        'description': 'Windows Subsystem for Linux',
+        'isActive': true,
+        'order': 1,
+      },
+      {
+        'id': '2',
+        'name': 'wsl2',
+        'displayName': 'WSL 2',
+        'icon': 'upgrade',
+        'color': '#0078D4',
+        'status': 'unknown',
+        'version': null,
+        'description': 'Windows Subsystem for Linux 2',
+        'isActive': true,
+        'order': 2,
+      },
+      {
+        'id': '3',
+        'name': 'ubuntu',
+        'displayName': 'Ubuntu 22.04',
+        'icon': 'computer',
+        'color': '#E95420',
+        'status': 'unknown',
+        'version': null,
+        'description': 'Ubuntu 22.04 LTS for WSL',
+        'isActive': true,
+        'order': 3,
+      },
+      {
+        'id': '4',
+        'name': 'kali',
+        'displayName': 'Kali Linux',
+        'icon': 'terminal',
+        'color': '#557C94',
+        'status': 'unknown',
+        'version': null,
+        'description': 'Kali Linux for WSL',
+        'isActive': true,
+        'order': 4,
+      },
+      {
+        'id': '5',
+        'name': 'kex',
+        'displayName': 'Kali Linux with Kex',
+        'icon': 'update',
+        'color': '#557C94',
+        'status': 'unknown',
+        'version': null,
+        'description': 'Kali Linux with Kex for GUI support',
+        'isActive': true,
+        'order': 5,
+      },
+      {
+        'id': '6',
+        'name': 'wsl_update',
+        'displayName': 'WSL Update',
+        'icon': 'security',
+        'color': '#0078D4',
+        'status': 'unknown',
+        'version': null,
+        'description': 'Update WSL to latest version',
+        'isActive': true,
+        'order': 6,
+      },
+      {
+        'id': '7',
+        'name': 'wsl_config',
+        'displayName': 'WSL Configuration',
+        'icon': 'desktop_windows',
+        'color': '#0078D4',
+        'status': 'unknown',
+        'version': null,
+        'description': 'Configure WSL settings',
+        'isActive': true,
+        'order': 7,
+      },
+      {
+        'id': '8',
+        'name': 'wsl_storage',
+        'displayName': 'WSL Storage',
+        'icon': 'storage',
+        'color': '#0078D4',
+        'status': 'unknown',
+        'version': null,
+        'description': 'Manage WSL storage and disk space',
+        'isActive': true,
+        'order': 8,
+      },
+      {
+        'id': '9',
+        'name': 'wsl_network',
+        'displayName': 'WSL Network',
+        'icon': 'network_check',
+        'color': '#0078D4',
+        'status': 'unknown',
+        'version': null,
+        'description': 'Configure WSL networking',
+        'isActive': true,
+        'order': 9,
+      },
+      {
+        'id': '10',
+        'name': 'wsl_backup',
+        'displayName': 'WSL Backup',
+        'icon': 'folder',
+        'color': '#0078D4',
+        'status': 'unknown',
+        'version': null,
+        'description': 'Backup and restore WSL distributions',
+        'isActive': true,
+        'order': 10,
+      },
+    ];
+  }
+
+  Future<void> installWSLTool(String toolId) async {
+    // Mock implementation
+    await Future.delayed(const Duration(milliseconds: 50));
+    print('Installing WSL tool $toolId');
+  }
+
+  Future<void> removeWSLTool(String toolId) async {
+    // Mock implementation
+    await Future.delayed(const Duration(milliseconds: 50));
+    print('Removing WSL tool $toolId');
+  }
+
+  Future<void> updateWSLTool(String toolId, Map<String, dynamic> updates) async {
+    // Mock implementation
+    await Future.delayed(const Duration(milliseconds: 50));
+    print('Updating WSL tool $toolId: $updates');
   }
 }

@@ -9,6 +9,7 @@ import '../models/package_manager.dart';
 import '../models/common_tool.dart';
 import '../models/dev_tool.dart';
 import '../models/cross_platform_dev_tool.dart';
+import '../models/wsl_tool.dart';
 
 class MainContent extends StatelessWidget {
   final String selectedCategory;
@@ -16,10 +17,12 @@ class MainContent extends StatelessWidget {
   final List<CommonTool> commonTools;
   final List<DevTool> devTools;
   final List<CrossPlatformDevTool> crossPlatformDevTools;
+  final List<WSLTool> wslTools;
   final bool isLoadingPackageManagers;
   final bool isLoadingCommonTools;
   final bool isLoadingDevTools;
   final bool isLoadingCrossPlatformDevTools;
+  final bool isLoadingWSLTools;
   final VoidCallback onInstallAllPackageManagers;
   final Function(PackageManager) onInstallPackageManager;
   final Function(PackageManager) onCheckPackageManager;
@@ -48,6 +51,14 @@ class MainContent extends StatelessWidget {
   final Function(CrossPlatformDevTool) onRemoveCrossPlatformDevTool;
   final Function(CrossPlatformDevTool) onReinstallCrossPlatformDevTool;
   final Function(CrossPlatformDevTool) onUpdateCrossPlatformDevTool;
+  final VoidCallback onInstallAllWSLTools;
+  final Function(WSLTool) onInstallWSLTool;
+  final Function(WSLTool) onCheckWSLTool;
+  final Function(WSLTool) onTestWSLTool;
+  final Function(WSLTool) onRemoveWSLTool;
+  final Function(WSLTool) onReinstallWSLTool;
+  final Function(WSLTool) onUpdateWSLTool;
+  final Function(String) onNavigateToModule;
 
   const MainContent({
     Key? key,
@@ -56,10 +67,12 @@ class MainContent extends StatelessWidget {
     required this.commonTools,
     required this.devTools,
     required this.crossPlatformDevTools,
+    required this.wslTools,
     required this.isLoadingPackageManagers,
     required this.isLoadingCommonTools,
     required this.isLoadingDevTools,
     required this.isLoadingCrossPlatformDevTools,
+    required this.isLoadingWSLTools,
     required this.onInstallAllPackageManagers,
     required this.onInstallPackageManager,
     required this.onCheckPackageManager,
@@ -88,6 +101,14 @@ class MainContent extends StatelessWidget {
     required this.onRemoveCrossPlatformDevTool,
     required this.onReinstallCrossPlatformDevTool,
     required this.onUpdateCrossPlatformDevTool,
+    required this.onInstallAllWSLTools,
+    required this.onInstallWSLTool,
+    required this.onCheckWSLTool,
+    required this.onTestWSLTool,
+    required this.onRemoveWSLTool,
+    required this.onReinstallWSLTool,
+    required this.onUpdateWSLTool,
+    required this.onNavigateToModule,
   }) : super(key: key);
 
   @override
