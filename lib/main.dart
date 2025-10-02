@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:async';
+import 'database/prisma_client.dart';
 
 void main() {
   runApp(const FullScreenApp());
@@ -47,6 +48,9 @@ class _FullScreenHomePageState extends State<FullScreenHomePage> {
   @override
   void initState() {
     super.initState();
+    // Initialize Prisma database
+    _initializeDatabase();
+    
     // Set full screen mode on Windows
     _setFullScreen();
     
@@ -56,6 +60,34 @@ class _FullScreenHomePageState extends State<FullScreenHomePage> {
         _forceFullScreen();
       }
     });
+  }
+
+  Future<void> _initializeDatabase() async {
+    try {
+      await PrismaClient.instance.initialize();
+      await _loadUserSettings();
+      await _logAppEvent('info', 'App initialized successfully', category: 'startup');
+    } catch (e) {
+      await _logAppEvent('error', 'Failed to initialize database: $e', category: 'startup');
+    }
+  }
+
+  Future<void> _loadUserSettings() async {
+    try {
+      final settings = await PrismaClient.instance.getUserSettings('default-user');
+      if (settings != null) {
+        setState(() {
+          _leftSidebarVisible = settings['sidebarLeftVisible'] ?? true;
+          _rightSidebarVisible = settings['sidebarRightVisible'] ?? true;
+        });
+      }
+    } catch (e) {
+      await _logAppEvent('error', 'Failed to load user settings: $e', category: 'settings');
+    }
+  }
+
+  Future<void> _logAppEvent(String level, String message, {String? category, Map<String, dynamic>? metadata}) async {
+    await PrismaClient.instance.logAppEvent(level, message, category: category, metadata: metadata);
   }
 
   @override
@@ -98,12 +130,36 @@ class _FullScreenHomePageState extends State<FullScreenHomePage> {
     setState(() {
       _leftSidebarVisible = !_leftSidebarVisible;
     });
+    _saveUserSettings();
+    _logAppEvent('info', 'Left sidebar toggled', category: 'navigation', metadata: {
+      'visible': _leftSidebarVisible,
+      'timestamp': DateTime.now().toIso8601String(),
+    });
   }
 
   void _toggleRightSidebar() {
     setState(() {
       _rightSidebarVisible = !_rightSidebarVisible;
     });
+    _saveUserSettings();
+    _logAppEvent('info', 'Right sidebar toggled', category: 'navigation', metadata: {
+      'visible': _rightSidebarVisible,
+      'timestamp': DateTime.now().toIso8601String(),
+    });
+  }
+
+  Future<void> _saveUserSettings() async {
+    try {
+      await PrismaClient.instance.updateUserSettings('default-user', {
+        'sidebarLeftVisible': _leftSidebarVisible,
+        'sidebarRightVisible': _rightSidebarVisible,
+        'fullScreenMode': true,
+        'autoFullScreen': true,
+        'updatedAt': DateTime.now().toIso8601String(),
+      });
+    } catch (e) {
+      await _logAppEvent('error', 'Failed to save user settings: $e', category: 'settings');
+    }
   }
 
   @override
@@ -294,11 +350,32 @@ class _FullScreenHomePageState extends State<FullScreenHomePage> {
                     ),
                   ),
                   const SizedBox(height: 15),
-                  _buildStatusCard('CPU Usage', '45%', Icons.memory, Colors.green),
-                  const SizedBox(height: 10),
-                  _buildStatusCard('Memory', '2.1GB / 8GB', Icons.storage, Colors.orange),
-                  const SizedBox(height: 10),
-                  _buildStatusCard('Network', 'Connected', Icons.wifi, Colors.blue),
+                  FutureBuilder<Map<String, dynamic>?>(
+                    future: PrismaClient.instance.getSystemStatus(),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        final status = snapshot.data!;
+                        return Column(
+                          children: [
+                            _buildStatusCard('CPU Usage', '${status['cpuUsage']?.toStringAsFixed(1) ?? '45.0'}%', Icons.memory, Colors.green),
+                            const SizedBox(height: 10),
+                            _buildStatusCard('Memory', '${status['memoryUsage']?.toStringAsFixed(1) ?? '2.1'}GB / 8GB', Icons.storage, Colors.orange),
+                            const SizedBox(height: 10),
+                            _buildStatusCard('Network', status['networkStatus'] ?? 'Connected', Icons.wifi, Colors.blue),
+                          ],
+                        );
+                      }
+                      return Column(
+                        children: [
+                          _buildStatusCard('CPU Usage', '45%', Icons.memory, Colors.green),
+                          const SizedBox(height: 10),
+                          _buildStatusCard('Memory', '2.1GB / 8GB', Icons.storage, Colors.orange),
+                          const SizedBox(height: 10),
+                          _buildStatusCard('Network', 'Connected', Icons.wifi, Colors.blue),
+                        ],
+                      );
+                    },
+                  ),
                   
                   const SizedBox(height: 30),
                   const Text(

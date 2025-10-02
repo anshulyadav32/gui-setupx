@@ -1,0 +1,106 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // Relations
+  settings UserSettings?
+  sessions Session[]
+  
+  @@map("users")
+}
+
+model UserSettings {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // App settings
+  theme     String   @default("dark")
+  language  String   @default("en")
+  sidebarLeftVisible  Boolean @default(true)
+  sidebarRightVisible Boolean @default(true)
+  
+  // Full screen settings
+  fullScreenMode Boolean @default(true)
+  autoFullScreen Boolean @default(true)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@map("user_settings")
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Session data
+  sessionData Json?
+  isActive    Boolean  @default(true)
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  expiresAt   DateTime
+  
+  @@map("sessions")
+}
+
+model AppLog {
+  id        String   @id @default(cuid())
+  level     String   // info, warning, error, debug
+  message   String
+  category  String?  // navigation, sidebar, fullscreen, etc.
+  metadata  Json?
+  
+  createdAt DateTime @default(now())
+  
+  @@map("app_logs")
+}
+
+model NavigationItem {
+  id        String   @id @default(cuid())
+  name      String
+  icon      String?
+  route     String?
+  order     Int      @default(0)
+  isActive  Boolean  @default(true)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@map("navigation_items")
+}
+
+model SystemStatus {
+  id        String   @id @default(cuid())
+  
+  // System metrics
+  cpuUsage    Float?
+  memoryUsage Float?
+  networkStatus String @default("connected")
+  
+  // App metrics
+  activeUsers Int @default(0)
+  sidebarToggleCount Int @default(0)
+  fullScreenToggleCount Int @default(0)
+  
+  createdAt DateTime @default(now())
+  
+  @@map("system_status")
+}
