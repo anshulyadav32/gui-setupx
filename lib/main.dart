@@ -641,7 +641,7 @@ class _FullScreenHomePageState extends State<FullScreenHomePage> {
       case 'flight': return Icons.flight;
       case 'code': return Icons.code;
       case 'terminal': return Icons.terminal;
-      case 'package': return Icons.package;
+      case 'package': return Icons.inventory;
       case 'build': return Icons.build;
       default: return Icons.inventory;
     }
