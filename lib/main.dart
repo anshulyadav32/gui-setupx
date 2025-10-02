@@ -1214,6 +1214,80 @@ class _FullScreenHomePageState extends State<FullScreenHomePage> {
     );
   }
 
+  Widget _buildActionLogItem(Map<String, dynamic> log) {
+    final message = log['message'] ?? '';
+    final level = log['level'] ?? 'info';
+    final timestamp = log['timestamp'] as DateTime?;
+    
+    Color levelColor;
+    IconData levelIcon;
+    
+    switch (level) {
+      case 'success':
+        levelColor = Colors.green;
+        levelIcon = Icons.check_circle;
+        break;
+      case 'error':
+        levelColor = Colors.red;
+        levelIcon = Icons.error;
+        break;
+      case 'warning':
+        levelColor = Colors.orange;
+        levelIcon = Icons.warning;
+        break;
+      case 'info':
+      default:
+        levelColor = Colors.blue;
+        levelIcon = Icons.info;
+        break;
+    }
+    
+    return Container(
+      margin: const EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.05),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: levelColor.withOpacity(0.3), width: 1),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(
+            levelIcon,
+            color: levelColor,
+            size: 16,
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  message,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 13,
+                  ),
+                ),
+                if (timestamp != null) ...[
+                  const SizedBox(height: 4),
+                  Text(
+                    '${timestamp.hour.toString().padLeft(2, '0')}:${timestamp.minute.toString().padLeft(2, '0')}:${timestamp.second.toString().padLeft(2, '0')}',
+                    style: TextStyle(
+                      color: Colors.white54,
+                      fontSize: 11,
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildActionButton(String title, IconData icon) {
     return SizedBox(
       width: double.infinity,
