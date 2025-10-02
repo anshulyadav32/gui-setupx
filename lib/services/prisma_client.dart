@@ -66,6 +66,15 @@ class PrismaClient {
         'isActive': true,
         'category': 'common_tools',
       },
+      {
+        'id': '4',
+        'name': 'Dev Tools',
+        'icon': 'code',
+        'route': '/dev-tools',
+        'order': 4,
+        'isActive': true,
+        'category': 'dev_tools',
+      },
     ];
   }
 
@@ -464,5 +473,151 @@ class PrismaClient {
         'order': 21,
       },
     ];
+  }
+
+  // Dev Tools operations
+  Future<List<Map<String, dynamic>>> getDevTools() async {
+    // Mock implementation - in real app, this would query the database
+    await Future.delayed(const Duration(milliseconds: 100));
+    return [
+      {
+        'id': '1',
+        'name': 'node',
+        'displayName': 'Node.js',
+        'icon': 'terminal',
+        'color': '#339933',
+        'status': 'unknown',
+        'version': null,
+        'description': 'JavaScript runtime environment',
+        'isActive': true,
+        'order': 1,
+      },
+      {
+        'id': '2',
+        'name': 'nvm',
+        'displayName': 'NVM',
+        'icon': 'terminal',
+        'color': '#ACA799',
+        'status': 'unknown',
+        'version': null,
+        'description': 'Node Version Manager',
+        'isActive': true,
+        'order': 2,
+      },
+      {
+        'id': '3',
+        'name': 'xampp',
+        'displayName': 'XAMPP',
+        'icon': 'storage',
+        'color': '#FF6600',
+        'status': 'unknown',
+        'version': null,
+        'description': 'Apache, MySQL, PHP development environment',
+        'isActive': true,
+        'order': 3,
+      },
+      {
+        'id': '4',
+        'name': 'vercel_cli',
+        'displayName': 'Vercel CLI',
+        'icon': 'cloud',
+        'color': '#000000',
+        'status': 'unknown',
+        'version': null,
+        'description': 'Vercel deployment and development CLI',
+        'isActive': true,
+        'order': 4,
+      },
+      {
+        'id': '5',
+        'name': 'gemini_cli',
+        'displayName': 'Gemini CLI',
+        'icon': 'code',
+        'color': '#4285F4',
+        'status': 'unknown',
+        'version': null,
+        'description': 'Google Gemini AI CLI tool',
+        'isActive': true,
+        'order': 5,
+      },
+      {
+        'id': '6',
+        'name': 'cloud_cli',
+        'displayName': 'Cloud CLI',
+        'icon': 'cloud',
+        'color': '#007ACC',
+        'status': 'unknown',
+        'version': null,
+        'description': 'Multi-cloud CLI tool',
+        'isActive': true,
+        'order': 6,
+      },
+      {
+        'id': '7',
+        'name': 'grok_cli',
+        'displayName': 'Grok CLI',
+        'icon': 'code',
+        'color': '#FF6B35',
+        'status': 'unknown',
+        'version': null,
+        'description': 'Grok AI CLI tool',
+        'isActive': true,
+        'order': 7,
+      },
+      {
+        'id': '8',
+        'name': 'codex_cli',
+        'displayName': 'Codex CLI',
+        'icon': 'code',
+        'color': '#9B59B6',
+        'status': 'unknown',
+        'version': null,
+        'description': 'Codex AI CLI tool',
+        'isActive': true,
+        'order': 8,
+      },
+      {
+        'id': '9',
+        'name': 'aws_cli',
+        'displayName': 'AWS CLI',
+        'icon': 'cloud',
+        'color': '#FF9900',
+        'status': 'unknown',
+        'version': null,
+        'description': 'Amazon Web Services CLI',
+        'isActive': true,
+        'order': 9,
+      },
+      {
+        'id': '10',
+        'name': 'azure_cli',
+        'displayName': 'Azure CLI',
+        'icon': 'cloud',
+        'color': '#0078D4',
+        'status': 'unknown',
+        'version': null,
+        'description': 'Microsoft Azure CLI',
+        'isActive': true,
+        'order': 10,
+      },
+      {
+        'id': '11',
+        'name': 'gcloud_cli',
+        'displayName': 'Google Cloud CLI',
+        'icon': 'cloud',
+        'color': '#4285F4',
+        'status': 'unknown',
+        'version': null,
+        'description': 'Google Cloud Platform CLI',
+        'isActive': true,
+        'order': 11,
+      },
+    ];
+  }
+
+  Future<void> updateDevTool(String toolId, Map<String, dynamic> updates) async {
+    // Mock implementation
+    await Future.delayed(const Duration(milliseconds: 50));
+    print('Updating dev tool $toolId: $updates');
   }
 }

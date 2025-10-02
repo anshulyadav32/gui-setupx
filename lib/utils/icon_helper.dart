@@ -56,6 +56,21 @@ class IconHelper {
     }
   }
 
+  static IconData getDevToolIcon(String iconName) {
+    switch (iconName.toLowerCase()) {
+      case 'terminal':
+        return Icons.terminal;
+      case 'storage':
+        return Icons.storage;
+      case 'cloud':
+        return Icons.cloud;
+      case 'code':
+        return Icons.code;
+      default:
+        return Icons.code;
+    }
+  }
+
   static IconData getActionLogIcon(String level) {
     switch (level.toLowerCase()) {
       case 'info':

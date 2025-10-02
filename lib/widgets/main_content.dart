@@ -3,15 +3,19 @@ import '../utils/responsive_helper.dart';
 import 'dashboard_view.dart';
 import 'package_manager_view.dart';
 import 'common_tools_view.dart';
+import 'dev_tools_view.dart';
 import '../models/package_manager.dart';
 import '../models/common_tool.dart';
+import '../models/dev_tool.dart';
 
 class MainContent extends StatelessWidget {
   final String selectedCategory;
   final List<PackageManager> packageManagers;
   final List<CommonTool> commonTools;
+  final List<DevTool> devTools;
   final bool isLoadingPackageManagers;
   final bool isLoadingCommonTools;
+  final bool isLoadingDevTools;
   final VoidCallback onInstallAllPackageManagers;
   final Function(PackageManager) onInstallPackageManager;
   final Function(PackageManager) onCheckPackageManager;
@@ -26,14 +30,23 @@ class MainContent extends StatelessWidget {
   final Function(CommonTool) onRemoveCommonTool;
   final Function(CommonTool) onReinstallCommonTool;
   final Function(CommonTool) onUpdateCommonTool;
+  final VoidCallback onInstallAllDevTools;
+  final Function(DevTool) onInstallDevTool;
+  final Function(DevTool) onCheckDevTool;
+  final Function(DevTool) onTestDevTool;
+  final Function(DevTool) onRemoveDevTool;
+  final Function(DevTool) onReinstallDevTool;
+  final Function(DevTool) onUpdateDevTool;
 
   const MainContent({
     Key? key,
     required this.selectedCategory,
     required this.packageManagers,
     required this.commonTools,
+    required this.devTools,
     required this.isLoadingPackageManagers,
     required this.isLoadingCommonTools,
+    required this.isLoadingDevTools,
     required this.onInstallAllPackageManagers,
     required this.onInstallPackageManager,
     required this.onCheckPackageManager,
@@ -48,6 +61,13 @@ class MainContent extends StatelessWidget {
     required this.onRemoveCommonTool,
     required this.onReinstallCommonTool,
     required this.onUpdateCommonTool,
+    required this.onInstallAllDevTools,
+    required this.onInstallDevTool,
+    required this.onCheckDevTool,
+    required this.onTestDevTool,
+    required this.onRemoveDevTool,
+    required this.onReinstallDevTool,
+    required this.onUpdateDevTool,
   }) : super(key: key);
 
   @override
@@ -158,6 +178,17 @@ class MainContent extends StatelessWidget {
           onReinstall: onReinstallCommonTool,
           onUpdate: onUpdateCommonTool,
         );
+      case 'dev_tools':
+        return DevToolsView(
+          devTools: devTools,
+          onInstallAll: onInstallAllDevTools,
+          onInstall: onInstallDevTool,
+          onCheck: onCheckDevTool,
+          onTest: onTestDevTool,
+          onRemove: onRemoveDevTool,
+          onReinstall: onReinstallDevTool,
+          onUpdate: onUpdateDevTool,
+        );
       case 'dashboard':
       default:
         return DashboardView(
@@ -177,6 +208,8 @@ class MainContent extends StatelessWidget {
         return Icons.inventory;
       case 'common_tools':
         return Icons.build;
+      case 'dev_tools':
+        return Icons.code;
       case 'dashboard':
       default:
         return Icons.dashboard;
@@ -189,6 +222,8 @@ class MainContent extends StatelessWidget {
         return 'Package Manager';
       case 'common_tools':
         return 'Common Tools';
+      case 'dev_tools':
+        return 'Dev Tools';
       case 'dashboard':
       default:
         return 'Dashboard';

@@ -6,10 +6,12 @@ import 'services/prisma_client.dart';
 import 'models/navbar_item.dart';
 import 'models/package_manager.dart';
 import 'models/common_tool.dart';
+import 'models/dev_tool.dart';
 import 'models/action_log.dart';
 import 'widgets/left_sidebar.dart';
 import 'widgets/right_sidebar.dart';
 import 'widgets/main_content.dart';
+import 'widgets/dev_tools_view.dart';
 
 void main() {
   runApp(const FullScreenApp());
@@ -50,12 +52,14 @@ class _FullScreenHomePageState extends State<FullScreenHomePage> {
   List<NavbarItem> _navbarItems = [];
   List<PackageManager> _packageManagers = [];
   List<CommonTool> _commonTools = [];
+  List<DevTool> _devTools = [];
   List<ActionLog> _actionLogs = [];
 
   // Loading States
   bool _isLoadingNavbar = false;
   bool _isLoadingPackageManagers = false;
   bool _isLoadingCommonTools = false;
+  bool _isLoadingDevTools = false;
 
   // Timer for maintaining full screen
   Timer? _fullScreenTimer;
@@ -108,6 +112,7 @@ class _FullScreenHomePageState extends State<FullScreenHomePage> {
       await _loadNavbarItems();
       await _loadPackageManagers();
       await _loadCommonTools();
+      await _loadDevTools();
       
       // Automatically verify status of all components on startup
       await _verifyAllComponentStatus();
@@ -188,6 +193,21 @@ class _FullScreenHomePageState extends State<FullScreenHomePage> {
       await _logAppEvent('error', 'Failed to load common tools: $e', category: 'common_tools');
     } finally {
       setState(() => _isLoadingCommonTools = false);
+    }
+  }
+
+  Future<void> _loadDevTools() async {
+    setState(() => _isLoadingDevTools = true);
+    try {
+      final tools = await PrismaClient.instance.getDevTools();
+      setState(() {
+        _devTools = tools.map((tool) => DevTool.fromMap(tool)).toList();
+      });
+      await _logAppEvent('info', 'Dev tools loaded successfully: ${_devTools.length} tools', category: 'dev_tools');
+    } catch (e) {
+      await _logAppEvent('error', 'Failed to load dev tools: $e', category: 'dev_tools');
+    } finally {
+      setState(() => _isLoadingDevTools = false);
     }
   }
 
@@ -476,6 +496,120 @@ class _FullScreenHomePageState extends State<FullScreenHomePage> {
     print('Message: ${tool.displayName} updated successfully');
   }
 
+  // Dev Tools methods
+  Future<void> _installAllDevTools() async {
+    await _logAppEvent('info', 'Installing all dev tools', category: 'dev_tools');
+    for (final tool in _devTools) {
+      await _installDevTool(tool);
+    }
+  }
+
+  Future<void> _installDevTool(DevTool tool) async {
+    await _logAppEvent('info', 'Installing dev tool: ${tool.displayName}', 
+        category: 'dev_tools', 
+        metadata: {'tool': tool.displayName});
+    
+    // Simulate installation
+    await Future.delayed(const Duration(seconds: 1));
+    
+    setState(() {
+      final index = _devTools.indexWhere((t) => t.id == tool.id);
+      if (index != -1) {
+        _devTools[index] = _devTools[index].copyWith(
+          status: 'installed',
+          version: '1.0.0',
+        );
+      }
+    });
+    
+    await _logAppEvent('success', 'Dev tool installed: ${tool.displayName}', category: 'dev_tools');
+  }
+
+  Future<void> _checkDevTool(DevTool tool) async {
+    await _logAppEvent('info', 'Checking dev tool: ${tool.displayName}', 
+        category: 'dev_tools', 
+        metadata: {'tool': tool.displayName});
+    
+    // Simulate status check
+    await Future.delayed(const Duration(milliseconds: 500));
+    print('Checking ${tool.displayName} status...');
+    
+    // Update status based on some logic (simulate real checking)
+    final isInstalled = tool.name == 'node' || 
+                       tool.name == 'nvm' || 
+                       tool.name == 'aws_cli' || 
+                       tool.name == 'azure_cli' || 
+                       tool.name == 'gcloud_cli';
+    
+    setState(() {
+      final index = _devTools.indexWhere((t) => t.id == tool.id);
+      if (index != -1) {
+        _devTools[index] = _devTools[index].copyWith(
+          status: isInstalled ? 'installed' : 'unknown',
+          version: isInstalled ? '1.0.0' : null,
+        );
+      }
+    });
+    
+    print('Message: ${tool.displayName} is ${isInstalled ? 'installed' : 'not installed'}');
+    await _logAppEvent('success', '${tool.displayName} status: ${isInstalled ? 'installed' : 'not installed'}', 
+        category: 'dev_tools', 
+        metadata: {'tool': tool.displayName, 'status': tool.status});
+  }
+
+  Future<void> _testDevTool(DevTool tool) async {
+    await _logAppEvent('info', 'Testing dev tool: ${tool.displayName}', 
+        category: 'dev_tools', 
+        metadata: {'tool': tool.displayName});
+    
+    // Simulate test
+    await Future.delayed(const Duration(seconds: 1));
+    print('Testing ${tool.displayName}...');
+    print('Message: ${tool.displayName} is working correctly');
+  }
+
+  Future<void> _removeDevTool(DevTool tool) async {
+    await _logAppEvent('info', 'Removing dev tool: ${tool.displayName}', 
+        category: 'dev_tools', 
+        metadata: {'tool': tool.displayName});
+    
+    // Simulate removal
+    await Future.delayed(const Duration(seconds: 1));
+    
+    setState(() {
+      final index = _devTools.indexWhere((t) => t.id == tool.id);
+      if (index != -1) {
+        _devTools[index] = _devTools[index].copyWith(
+          status: 'unavailable',
+          version: null,
+        );
+      }
+    });
+    
+    await _logAppEvent('success', 'Dev tool removed: ${tool.displayName}', category: 'dev_tools');
+  }
+
+  Future<void> _reinstallDevTool(DevTool tool) async {
+    await _logAppEvent('info', 'Reinstalling dev tool: ${tool.displayName}', 
+        category: 'dev_tools', 
+        metadata: {'tool': tool.displayName});
+    
+    await _removeDevTool(tool);
+    await Future.delayed(const Duration(seconds: 1));
+    await _installDevTool(tool);
+  }
+
+  Future<void> _updateDevTool(DevTool tool) async {
+    await _logAppEvent('info', 'Updating dev tool: ${tool.displayName}', 
+        category: 'dev_tools', 
+        metadata: {'tool': tool.displayName});
+    
+    // Simulate update
+    await Future.delayed(const Duration(seconds: 1));
+    print('Updating ${tool.displayName}...');
+    print('Message: ${tool.displayName} updated successfully');
+  }
+
   Future<void> _verifyAllComponentStatus() async {
     await _logAppEvent('info', 'Verifying status of all components...', category: 'startup');
     
@@ -487,6 +621,11 @@ class _FullScreenHomePageState extends State<FullScreenHomePage> {
     // Verify common tools status
     for (final tool in _commonTools) {
       await _verifyCommonToolStatus(tool);
+    }
+    
+    // Verify dev tools status
+    for (final tool in _devTools) {
+      await _verifyDevToolStatus(tool);
     }
     
     await _logAppEvent('success', 'All component statuses verified', category: 'startup');
@@ -541,6 +680,28 @@ class _FullScreenHomePageState extends State<FullScreenHomePage> {
     });
   }
 
+  Future<void> _verifyDevToolStatus(DevTool tool) async {
+    // Simulate status check without UI feedback
+    await Future.delayed(const Duration(milliseconds: 100));
+    
+    // Update status based on realistic detection
+    final isInstalled = tool.name == 'node' || 
+                       tool.name == 'nvm' || 
+                       tool.name == 'aws_cli' || 
+                       tool.name == 'azure_cli' || 
+                       tool.name == 'gcloud_cli';
+    
+    setState(() {
+      final index = _devTools.indexWhere((t) => t.id == tool.id);
+      if (index != -1) {
+        _devTools[index] = _devTools[index].copyWith(
+          status: isInstalled ? 'installed' : 'unknown',
+          version: isInstalled ? '1.0.0' : null,
+        );
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -565,8 +726,10 @@ class _FullScreenHomePageState extends State<FullScreenHomePage> {
               selectedCategory: _selectedCategory,
               packageManagers: _packageManagers,
               commonTools: _commonTools,
+              devTools: _devTools,
               isLoadingPackageManagers: _isLoadingPackageManagers,
               isLoadingCommonTools: _isLoadingCommonTools,
+              isLoadingDevTools: _isLoadingDevTools,
               onInstallAllPackageManagers: _installAllPackageManagers,
               onInstallPackageManager: _installPackageManager,
               onCheckPackageManager: _checkPackageManager,
@@ -581,6 +744,13 @@ class _FullScreenHomePageState extends State<FullScreenHomePage> {
               onRemoveCommonTool: _removeCommonTool,
               onReinstallCommonTool: _reinstallCommonTool,
               onUpdateCommonTool: _updateCommonTool,
+              onInstallAllDevTools: _installAllDevTools,
+              onInstallDevTool: _installDevTool,
+              onCheckDevTool: _checkDevTool,
+              onTestDevTool: _testDevTool,
+              onRemoveDevTool: _removeDevTool,
+              onReinstallDevTool: _reinstallDevTool,
+              onUpdateDevTool: _updateDevTool,
             ),
           ),
           
