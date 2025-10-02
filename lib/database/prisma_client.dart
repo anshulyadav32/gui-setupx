@@ -144,4 +144,110 @@ class PrismaClient {
     // This would typically use Prisma client
     print('Deleting navbar item: $id');
   }
+
+  // Package Manager operations
+  Future<List<Map<String, dynamic>>> getPackageManagers() async {
+    // This would typically use Prisma client
+    return [
+      {
+        'id': '1',
+        'name': 'scoop',
+        'displayName': 'Scoop',
+        'icon': 'inventory_2',
+        'color': '#2196F3', // Blue
+        'status': 'available',
+        'version': '0.2.0',
+        'description': 'A command-line installer for Windows',
+        'isActive': true,
+        'order': 1,
+        'installCommand': 'scoop install',
+        'updateCommand': 'scoop update',
+        'uninstallCommand': 'scoop uninstall',
+      },
+      {
+        'id': '2',
+        'name': 'chocolatey',
+        'displayName': 'Chocolatey',
+        'icon': 'cake',
+        'color': '#FF9800', // Orange
+        'status': 'available',
+        'version': '1.4.0',
+        'description': 'The package manager for Windows',
+        'isActive': true,
+        'order': 2,
+        'installCommand': 'choco install',
+        'updateCommand': 'choco upgrade',
+        'uninstallCommand': 'choco uninstall',
+      },
+      {
+        'id': '3',
+        'name': 'winget',
+        'displayName': 'Winget',
+        'icon': 'flight',
+        'color': '#9C27B0', // Purple
+        'status': 'available',
+        'version': '1.6.0',
+        'description': 'Windows Package Manager',
+        'isActive': true,
+        'order': 3,
+        'installCommand': 'winget install',
+        'updateCommand': 'winget upgrade',
+        'uninstallCommand': 'winget uninstall',
+      },
+      {
+        'id': '4',
+        'name': 'npm',
+        'displayName': 'NPM',
+        'icon': 'code',
+        'color': '#F44336', // Red
+        'status': 'available',
+        'version': '10.0.0',
+        'description': 'Node Package Manager',
+        'isActive': true,
+        'order': 4,
+        'installCommand': 'npm install',
+        'updateCommand': 'npm update',
+        'uninstallCommand': 'npm uninstall',
+      },
+      {
+        'id': '5',
+        'name': 'pip',
+        'displayName': 'Pip',
+        'icon': 'terminal',
+        'color': '#4CAF50', // Green
+        'status': 'available',
+        'version': '23.0.0',
+        'description': 'Python Package Installer',
+        'isActive': true,
+        'order': 5,
+        'installCommand': 'pip install',
+        'updateCommand': 'pip install --upgrade',
+        'uninstallCommand': 'pip uninstall',
+      },
+    ];
+  }
+
+  Future<Map<String, dynamic>?> getPackageManager(String name) async {
+    final managers = await getPackageManagers();
+    try {
+      return managers.firstWhere((manager) => manager['name'] == name);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  Future<void> updatePackageManager(String id, Map<String, dynamic> updates) async {
+    // This would typically use Prisma client
+    print('Updating package manager $id: $updates');
+  }
+
+  Future<void> createPackageManager(Map<String, dynamic> manager) async {
+    // This would typically use Prisma client
+    print('Creating package manager: $manager');
+  }
+
+  Future<void> deletePackageManager(String id) async {
+    // This would typically use Prisma client
+    print('Deleting package manager: $id');
+  }
 }

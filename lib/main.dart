@@ -38,6 +38,7 @@ class _FullScreenHomePageState extends State<FullScreenHomePage> {
   Timer? _fullScreenTimer;
 
   List<Map<String, dynamic>> _navbarItems = [];
+  List<Map<String, dynamic>> _packageManagers = [];
   String _selectedCategory = 'dashboard';
 
   @override
@@ -62,6 +63,7 @@ class _FullScreenHomePageState extends State<FullScreenHomePage> {
       await PrismaClient.instance.initialize();
       await _loadUserSettings();
       await _loadNavbarItems();
+      await _loadPackageManagers();
       await _logAppEvent('info', 'App initialized successfully', category: 'startup');
     } catch (e) {
       await _logAppEvent('error', 'Failed to initialize database: $e', category: 'startup');
@@ -138,6 +140,22 @@ class _FullScreenHomePageState extends State<FullScreenHomePage> {
         ];
         _selectedCategory = 'dashboard';
         _selectedIndex = 0;
+      });
+    }
+  }
+
+  Future<void> _loadPackageManagers() async {
+    try {
+      final managers = await PrismaClient.instance.getPackageManagers();
+      setState(() {
+        _packageManagers = managers;
+      });
+      await _logAppEvent('info', 'Package managers loaded successfully: ${managers.length} managers', category: 'package_managers');
+    } catch (e) {
+      await _logAppEvent('error', 'Failed to load package managers: $e', category: 'package_managers');
+      // Fallback to empty list if database fails
+      setState(() {
+        _packageManagers = [];
       });
     }
   }
@@ -486,29 +504,81 @@ class _FullScreenHomePageState extends State<FullScreenHomePage> {
           ),
           const SizedBox(height: 40),
           Expanded(
-            child: Container(
-              margin: const EdgeInsets.symmetric(horizontal: 40),
-              child: GridView.count(
-                crossAxisCount: 2,
-                crossAxisSpacing: 20,
-                mainAxisSpacing: 20,
-                childAspectRatio: 2.5,
-                children: [
-                  _buildPackageManagerCard('Scoop', Icons.package_2, Colors.blue),
-                  _buildPackageManagerCard('Chocolatey', Icons.cake, Colors.orange),
-                  _buildPackageManagerCard('Winget', Icons.flight, Colors.purple),
-                  _buildPackageManagerCard('NPM', Icons.code, Colors.red),
-                  _buildPackageManagerCard('Pip', Icons.python, Colors.green),
-                ],
-              ),
-            ),
+            child: _packageManagers.isEmpty 
+              ? const Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      CircularProgressIndicator(color: Colors.white70),
+                      SizedBox(height: 16),
+                      Text(
+                        'Loading package managers...',
+                        style: TextStyle(color: Colors.white70),
+                      ),
+                    ],
+                  ),
+                )
+              : Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 40),
+                  child: GridView.builder(
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      crossAxisSpacing: 20,
+                      mainAxisSpacing: 20,
+                      childAspectRatio: 2.5,
+                    ),
+                    itemCount: _packageManagers.length,
+                    itemBuilder: (context, index) {
+                      final manager = _packageManagers[index];
+                      return _buildPackageManagerCardFromData(manager);
+                    },
+                  ),
+                ),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildPackageManagerCard(String name, IconData icon, Color color) {
+  Widget _buildPackageManagerCardFromData(Map<String, dynamic> manager) {
+    final name = manager['displayName'] ?? manager['name'] ?? 'Unknown';
+    final iconName = manager['icon'] ?? 'inventory';
+    final colorHex = manager['color'] ?? '#2196F3';
+    final status = manager['status'] ?? 'unknown';
+    final version = manager['version'] ?? '';
+    
+    // Parse hex color
+    Color color;
+    try {
+      color = Color(int.parse(colorHex.replaceFirst('#', '0xFF')));
+    } catch (e) {
+      color = Colors.blue;
+    }
+    
+    // Get icon
+    IconData icon = _getPackageManagerIcon(iconName);
+    
+    // Get status color
+    Color statusColor;
+    String statusText;
+    switch (status) {
+      case 'available':
+        statusColor = Colors.green;
+        statusText = 'Available';
+        break;
+      case 'unavailable':
+        statusColor = Colors.red;
+        statusText = 'Unavailable';
+        break;
+      case 'error':
+        statusColor = Colors.orange;
+        statusText = 'Error';
+        break;
+      default:
+        statusColor = Colors.grey;
+        statusText = 'Unknown';
+    }
+    
     return Container(
       decoration: BoxDecoration(
         color: Colors.white.withOpacity(0.1),
@@ -531,19 +601,30 @@ class _FullScreenHomePageState extends State<FullScreenHomePage> {
               fontWeight: FontWeight.bold,
               color: color,
             ),
+            textAlign: TextAlign.center,
           ),
+          if (version.isNotEmpty) ...[
+            const SizedBox(height: 2),
+            Text(
+              'v$version',
+              style: TextStyle(
+                fontSize: 10,
+                color: Colors.white70,
+              ),
+            ),
+          ],
           const SizedBox(height: 4),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
             decoration: BoxDecoration(
-              color: Colors.green.withOpacity(0.2),
+              color: statusColor.withOpacity(0.2),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: const Text(
-              'Available',
+            child: Text(
+              statusText,
               style: TextStyle(
                 fontSize: 12,
-                color: Colors.green,
+                color: statusColor,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -551,6 +632,19 @@ class _FullScreenHomePageState extends State<FullScreenHomePage> {
         ],
       ),
     );
+  }
+
+  IconData _getPackageManagerIcon(String iconName) {
+    switch (iconName) {
+      case 'inventory_2': return Icons.inventory_2;
+      case 'cake': return Icons.cake;
+      case 'flight': return Icons.flight;
+      case 'code': return Icons.code;
+      case 'terminal': return Icons.terminal;
+      case 'package': return Icons.package;
+      case 'build': return Icons.build;
+      default: return Icons.inventory;
+    }
   }
 
   Widget _buildServerManagementView() {
